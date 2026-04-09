@@ -29,7 +29,7 @@ function App() {
               id={`tab-${t.id}`}
               aria-selected={tab === t.id}
               aria-controls={`panel-${t.id}`}
-              tabIndex={tab === t.id ? 0 : -1}
+              tabIndex={0}
               className={`tab ${tab === t.id ? 'tab--active' : ''}`}
               onClick={() => setTab(t.id)}
             >
