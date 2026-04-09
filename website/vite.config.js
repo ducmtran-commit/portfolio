@@ -1,16 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-/** /static-site → /static-site/ so index.html is found (avoids 404). */
-function staticSiteTrailingSlash() {
+/** /path → /path/ so index.html is found (avoids 404). */
+function trailingSlashRedirects(paths) {
   return {
-    name: 'static-site-trailing-slash',
+    name: 'trailing-slash-redirects',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const pathOnly = req.url?.split('?')[0] ?? ''
-        if (pathOnly === '/static-site') {
+        if (paths.includes(pathOnly)) {
           res.statusCode = 302
-          res.setHeader('Location', '/static-site/')
+          res.setHeader('Location', `${pathOnly}/`)
           res.end()
           return
         }
@@ -20,9 +20,9 @@ function staticSiteTrailingSlash() {
     configurePreviewServer(server) {
       server.middlewares.use((req, res, next) => {
         const pathOnly = req.url?.split('?')[0] ?? ''
-        if (pathOnly === '/static-site') {
+        if (paths.includes(pathOnly)) {
           res.statusCode = 302
-          res.setHeader('Location', '/static-site/')
+          res.setHeader('Location', `${pathOnly}/`)
           res.end()
           return
         }
@@ -34,7 +34,7 @@ function staticSiteTrailingSlash() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), staticSiteTrailingSlash()],
+  plugins: [react(), trailingSlashRedirects(['/static-site', '/html'])],
   server: {
     proxy: {
       '/api': 'http://localhost:4000',
