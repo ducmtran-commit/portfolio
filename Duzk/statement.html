@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Artist statement — themes and intent behind the work." />
+  <title>Your Name — Artist statement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Your Name</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="statement.html" aria-current="page">Statement</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="page" aria-labelledby="statement-heading">
+      <div class="wrap">
+        <p class="section-label">Artist statement</p>
+        <h2 id="statement-heading">Why I make what I make</h2>
+        <div class="prose">
+          <p>
+            Use this section to describe the ideas that drive your practice: recurring themes, research interests,
+            and how form and process support your intent. Write in your own voice — curators and collaborators read this
+            to understand your point of view, not a résumé.
+          </p>
+          <p>
+            A second paragraph can go deeper into a current body of work, a pivotal project, or how your work relates
+            to a wider cultural or ecological conversation. Edit freely; this file is yours.
+          </p>
+        </div>
+        <p class="prose prose-follow">
+          <a href="projects.html">See selected projects →</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <span>© <span id="y"></span> Your Name. All rights reserved.</span>
+      <span><a href="index.html">Home</a></span>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
