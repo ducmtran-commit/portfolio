@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio homepage — visual artist and selected work." />
+  <title>Your Name — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Your Name</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="statement.html">Statement</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div class="wrap">
+        <h1>Work that explores memory, place, and material.</h1>
+        <p class="tagline">
+          Visual artist and maker — replace this line with your discipline and focus in one clear sentence.
+        </p>
+        <a class="hero-cta" href="projects.html">View selected work</a>
+      </div>
+    </div>
+
+    <section class="home-highlights" aria-labelledby="explore-heading">
+      <div class="wrap">
+        <h2 id="explore-heading">Explore</h2>
+        <p class="sub">Jump to the full pages for statement, projects, bio, and ways to reach you.</p>
+        <div class="teaser-grid">
+          <a class="teaser-card" href="statement.html">
+            <h3>Artist statement</h3>
+            <p>Ideas, themes, and what drives your practice.</p>
+          </a>
+          <a class="teaser-card" href="projects.html">
+            <h3>Projects</h3>
+            <p>Selected work, mediums, and recent series.</p>
+          </a>
+          <a class="teaser-card" href="about.html">
+            <h3>About</h3>
+            <p>Background, studio, and what you’re doing now.</p>
+          </a>
+          <a class="teaser-card" href="contact.html">
+            <h3>Contact</h3>
+            <p>Email and socials for commissions and collaboration.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <span>© <span id="y"></span> Your Name. All rights reserved.</span>
+      <span>Multi-page portfolio — customize freely.</span>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
