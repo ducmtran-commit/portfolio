@@ -3,7 +3,12 @@
 export const site = {
   name: 'Your Name',
   subtitle: 'Visual artist',
+  /** One line under your name — set to '' to hide */
+  tagline: 'Paintings, works on paper, and studies of light in quiet rooms.',
 }
+
+/** Short line above the artwork grid */
+export const worksIntro = 'Selected works'
 
 export type Artwork = {
   id: string
