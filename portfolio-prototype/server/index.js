@@ -32,6 +32,24 @@ app.use(cors())
 app.use(express.json())
 app.use('/uploads', express.static(uploadsDir))
 
+/** This server is the API only — the visible site is served by Vite on port 5173. */
+app.get('/', (_req, res) => {
+  res.type('html').send(`<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><title>API server</title></head>
+<body style="font-family:system-ui,sans-serif;max-width:36rem;margin:2rem auto;padding:0 1rem">
+  <h1>This is the API (port ${PORT})</h1>
+  <p>There is no web UI here. Start the full dev command and open the Vite app instead:</p>
+  <pre style="background:#f1f5f9;padding:1rem;border-radius:8px">npm run dev</pre>
+  <p>Then open:</p>
+  <ul>
+    <li><a href="http://localhost:5173/">http://localhost:5173/</a> — React upload tool</li>
+    <li><a href="http://localhost:5173/static-site/">http://localhost:5173/static-site/</a> — static portfolio</li>
+  </ul>
+</body>
+</html>`)
+})
+
 function toClient(doc) {
   return {
     id: doc.id,
