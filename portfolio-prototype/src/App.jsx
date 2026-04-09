@@ -64,11 +64,15 @@ function App() {
 
   return (
     <main className="layout">
+      <p className="app-nav">
+        <a href="/static-site/">View public portfolio (HTML/CSS/JS) →</a>
+      </p>
       <section className="panel">
         <h1>Portfolio Prototype</h1>
         <p>
-          Upload artwork and media to server storage while building your React
-          portfolio.
+          Upload artwork and media to server storage. The static portfolio with
+          artworks / about / artist statements lives under{' '}
+          <code>/static-site/</code>.
         </p>
 
         <form className="upload-form" onSubmit={handleUpload}>
