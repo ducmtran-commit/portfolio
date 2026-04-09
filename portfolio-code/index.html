@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Artist portfolio" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,10 +11,70 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="styles.css" />
     <title>Portfolio</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="site">
+      <div class="accent-bar" aria-hidden="true"></div>
+
+      <header class="header">
+        <div class="header-top">
+          <div class="brand">
+            <p class="site-subtitle" id="site-subtitle"></p>
+            <h1 class="site-name" id="site-name"></h1>
+            <p class="site-tagline" id="site-tagline"></p>
+          </div>
+          <nav
+            class="tabs"
+            id="tablist"
+            role="tablist"
+            aria-label="Portfolio sections"
+          ></nav>
+        </div>
+      </header>
+
+      <main class="main">
+        <section
+          id="panel-artworks"
+          role="tabpanel"
+          aria-labelledby="tab-artworks"
+          class="panel panel--works"
+          hidden
+        >
+          <p class="works-intro" id="works-intro"></p>
+          <ul class="art-grid" id="art-grid"></ul>
+        </section>
+
+        <section
+          id="panel-about"
+          role="tabpanel"
+          aria-labelledby="tab-about"
+          class="panel panel--text"
+          hidden
+        >
+          <h2 class="panel-title">About</h2>
+          <div class="prose" id="about-body"></div>
+        </section>
+
+        <section
+          id="panel-statements"
+          role="tabpanel"
+          aria-labelledby="tab-statements"
+          class="panel panel--text"
+          hidden
+        >
+          <h2 class="panel-title">Artist statements</h2>
+          <div class="prose" id="statements-body"></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>© <span id="footer-year"></span> <span id="footer-name"></span></span>
+      </footer>
+    </div>
+
+    <script src="content.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
