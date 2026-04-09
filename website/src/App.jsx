@@ -65,14 +65,18 @@ function App() {
   return (
     <main className="layout">
       <p className="app-nav">
-        <a href="/static-site/">View public portfolio (HTML/CSS/JS) →</a>
+        <a href="/html/">Portfolio website (HTML/CSS/JS) →</a>
+        {' · '}
+        <a href="/static-site/">Mirror at /static-site/</a>
       </p>
       <section className="panel">
         <h1>Portfolio Prototype</h1>
         <p>
-          Upload artwork and media to server storage. The static portfolio with
-          artworks / about / artist statements lives under{' '}
-          <code>/static-site/</code>.
+          Upload artwork and media to server storage. The HTML portfolio
+          (artworks, about, artist statements) is in{' '}
+          <code>public/html/</code> — open{' '}
+          <a href="/html/">/html/</a> while dev server is running, or open{' '}
+          <code>public/html/index.html</code> from disk.
         </p>
 
         <form className="upload-form" onSubmit={handleUpload}>
