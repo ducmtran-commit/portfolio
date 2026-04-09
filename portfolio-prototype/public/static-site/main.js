@@ -62,7 +62,7 @@
       if (a.imageSrc) {
         const img = document.createElement('img')
         img.src = a.imageSrc
-        img.alt = ''
+        img.alt = a.imageAlt || a.title || ''
         img.loading = 'lazy'
         thumb.appendChild(img)
       }
