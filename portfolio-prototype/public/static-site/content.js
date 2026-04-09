@@ -22,6 +22,15 @@ window.portfolioContent = {
 
   artworks: [
     {
+      id: 'clownfish',
+      title: 'See What I Found — A Clownfish',
+      year: '2026',
+      medium: 'Digital illustration',
+      imageSrc: 'art/clownfish.png',
+      imageAlt:
+        'Digital illustration of a clownfish with clown makeup and the text See What I Found, A Clownfish',
+    },
+    {
       id: '1',
       title: 'Study in Blue',
       year: '2025',
