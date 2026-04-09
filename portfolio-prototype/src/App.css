@@ -6,6 +6,23 @@
   gap: 1rem;
 }
 
+.app-nav {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.app-nav a {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.panel code {
+  font-size: 0.88em;
+  padding: 0.1em 0.35em;
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
 .panel {
   background: #ffffff;
   border: 1px solid #e5e7eb;
