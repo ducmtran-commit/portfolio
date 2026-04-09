@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="About the artist — background and studio." />
+  <title>Your Name — About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Your Name</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="statement.html">Statement</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="about.html" aria-current="page">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="page" aria-labelledby="about-heading">
+      <div class="wrap">
+        <p class="section-label">About</p>
+        <h2 id="about-heading">About me</h2>
+        <div class="about-layout">
+          <div class="about-photo" role="img" aria-label="Portrait placeholder">
+            Add your portrait or studio photo here (replace this block with an &lt;img&gt;).
+          </div>
+          <div class="prose">
+            <p>
+              Introduce yourself: where you are based, your background, and what you are working on now. This can be
+              more personal than the artist statement — education, residencies, and what you care about outside the studio
+              are all fair game if they feel relevant.
+            </p>
+            <p>
+              Optional: list exhibitions, awards, or collections in a separate document or page; keep this section
+              readable and human.
+            </p>
+            <p>
+              <a href="contact.html">Get in touch →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <span>© <span id="y"></span> Your Name. All rights reserved.</span>
+      <span><a href="index.html">Home</a></span>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
