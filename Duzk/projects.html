@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Selected projects and recent work." />
+  <title>Your Name — Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Your Name</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="statement.html">Statement</a></li>
+          <li><a href="projects.html" aria-current="page">Projects</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="page" aria-labelledby="projects-heading">
+      <div class="wrap">
+        <p class="section-label">Selected projects</p>
+        <h2 id="projects-heading">Recent work</h2>
+        <p class="prose projects-intro">
+          Swap titles, copy, and thumbnails. Link each card to a case study page or external URL when you add more pages.
+        </p>
+        <div class="projects-grid">
+          <article class="project-card">
+            <div class="project-thumb" role="img" aria-label="Project image placeholder">Image</div>
+            <div class="project-body">
+              <h3>Project title one</h3>
+              <p>Medium, year — one line on what the viewer should know.</p>
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="project-thumb" role="img" aria-label="Project image placeholder">Image</div>
+            <div class="project-body">
+              <h3>Project title two</h3>
+              <p>Medium, year — short description or outcome.</p>
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="project-thumb" role="img" aria-label="Project image placeholder">Image</div>
+            <div class="project-body">
+              <h3>Project title three</h3>
+              <p>Medium, year — collaboration, venue, or series name.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <span>© <span id="y"></span> Your Name. All rights reserved.</span>
+      <span><a href="index.html">Home</a></span>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
