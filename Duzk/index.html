@@ -161,13 +161,25 @@
       const stageRect = reel.stage.getBoundingClientRect();
       const centerX = stageRect.left + stageRect.width / 2;
       const frames = reel.track.querySelectorAll(".film-frame");
+      const maxDistance = stageRect.width * 0.55;
 
       let nearest = null;
       let nearestDistance = Infinity;
       frames.forEach((frame) => {
         const rect = frame.getBoundingClientRect();
         const frameCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(centerX - frameCenter);
+        const signedDistance = frameCenter - centerX;
+        const distance = Math.abs(signedDistance);
+        const proximity = Math.max(0, 1 - distance / maxDistance);
+        const side = signedDistance >= 0 ? 1 : -1;
+
+        frame.style.setProperty("--frame-opacity", (0.34 + proximity * 0.66).toFixed(3));
+        frame.style.setProperty("--frame-scale", (0.86 + proximity * 0.17).toFixed(3));
+        frame.style.setProperty("--frame-blur", `${(2.6 - proximity * 2.6).toFixed(2)}px`);
+        frame.style.setProperty("--curve-y", `${((1 - proximity) * 34).toFixed(2)}px`);
+        frame.style.setProperty("--x-tilt", `${(-side * (1 - proximity) * 18).toFixed(2)}deg`);
+        frame.style.setProperty("--z-depth", `${(-((1 - proximity) * 110)).toFixed(2)}px`);
+
         if (distance < nearestDistance) {
           nearest = frame;
           nearestDistance = distance;
