@@ -220,8 +220,8 @@ section h2 {
   overflow-y: hidden;
   padding: 1.1rem var(--space) 1.65rem;
   scrollbar-width: none;
-  perspective: 1800px;
-  perspective-origin: center;
+  perspective: 2200px;
+  perspective-origin: 62% 50%;
   position: relative;
 }
 
@@ -242,11 +242,11 @@ section h2 {
 }
 
 .film-stage[data-direction="rtl"] .film-track {
-  transform: rotateX(9deg) rotateZ(-4.2deg);
+  transform: rotateX(12deg) rotateY(6deg) rotateZ(-5deg);
 }
 
 .film-stage[data-direction="ltr"] .film-track {
-  transform: rotateX(-8deg) rotateZ(4deg);
+  transform: rotateX(-11deg) rotateY(-6deg) rotateZ(5deg);
 }
 
 .film-stage::before {
@@ -266,6 +266,7 @@ section h2 {
   --x-tilt: 16deg;
   --z-lean: 0deg;
   --z-depth: -80px;
+  --frame-x: 0px;
   width: var(--frame-size);
   background: #020403;
   border: 2px solid #1a2324;
@@ -276,7 +277,7 @@ section h2 {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
   opacity: var(--frame-opacity);
   filter: blur(var(--frame-blur));
-  transform: translateY(var(--curve-y)) translateZ(var(--z-depth)) rotateY(var(--x-tilt)) rotateZ(var(--z-lean)) scale(var(--frame-scale));
+  transform: translateX(var(--frame-x)) translateY(var(--curve-y)) translateZ(var(--z-depth)) rotateY(var(--x-tilt)) rotateZ(var(--z-lean)) scale(var(--frame-scale));
   cursor: pointer;
   transition: transform 0.22s ease, opacity 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
 }
@@ -308,7 +309,7 @@ section h2 {
 .film-frame.is-active {
   opacity: 1;
   filter: blur(0);
-  transform: translateY(0) translateZ(0) rotateY(0deg) rotateZ(0deg) scale(1.04);
+  transform: translateX(0) translateY(0) translateZ(0) rotateY(0deg) rotateZ(0deg) scale(1.04);
   border-color: #5f2e1b;
 }
 
