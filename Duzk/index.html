@@ -93,161 +93,101 @@
     document.getElementById("y").textContent = new Date().getFullYear();
 
     const filmSection = document.getElementById("film-strip");
-    const reels = Array.from(document.querySelectorAll(".film-stage")).map((stage) => {
-      const track = stage.querySelector(".film-track");
-      const frames = Array.from(track.querySelectorAll(".film-frame"));
-      const clones = frames.map((frame) => frame.cloneNode(true));
-      clones.forEach((clone) => {
-        clone.classList.remove("is-active");
-        track.appendChild(clone);
-      });
+    const stage = document.querySelector(".film-stage");
+    const track = stage.querySelector(".film-track");
+    const frames = Array.from(track.querySelectorAll(".film-frame"));
 
-      const loopPoint = track.scrollWidth / 2;
-      const direction = stage.dataset.direction === "ltr" ? -1 : 1;
-      stage.scrollLeft = direction < 0 ? loopPoint : 0;
-
-      return {
-        stage,
-        track,
-        direction,
-        loopPoint,
-        isLocked: false,
-        isHovering: false,
-        lastScrollLeft: stage.scrollLeft,
-        lastTick: performance.now()
-      };
-    });
-    const reelByStage = new Map(reels.map((reel) => [reel.stage, reel]));
-
-    let mouseBoost = 0.8;
-    let mouseBoostTarget = 0.8;
+    let mouseBoost = 0.85;
+    let mouseBoostTarget = 0.85;
+    let isHoveringStage = false;
+    let isLocked = false;
+    let reelPhase = 0;
     let lastFrameTime = performance.now();
 
-    function updateActiveFrame(reel) {
-      const stageRect = reel.stage.getBoundingClientRect();
-      const centerX = stageRect.left + stageRect.width / 2;
-      const frames = reel.track.querySelectorAll(".film-frame");
-
-      let nearest = null;
-      let nearestDistance = Infinity;
-      frames.forEach((frame) => {
-        const rect = frame.getBoundingClientRect();
-        const frameCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(centerX - frameCenter);
-        if (distance < nearestDistance) {
-          nearest = frame;
-          nearestDistance = distance;
-        }
-        frame.classList.remove("is-active");
-      });
-      if (nearest) nearest.classList.add("is-active");
-    }
-
-    function applyMotionBlur(reel, now) {
-      const dt = Math.max(16, now - reel.lastTick);
-      const velocity = Math.abs(reel.stage.scrollLeft - reel.lastScrollLeft) / dt;
-      const blur = Math.min(10, velocity * 2.1);
-      reel.track.style.setProperty("--motion-blur", `${blur.toFixed(2)}px`);
-      reel.lastScrollLeft = reel.stage.scrollLeft;
-      reel.lastTick = now;
-    }
-
-    function styleReelDepth(reel, now) {
-      const stageRect = reel.stage.getBoundingClientRect();
-      const centerX = stageRect.left + stageRect.width / 2;
+    function styleOrbitalReel(now) {
       const time = now * 0.001;
-      const frames = reel.track.querySelectorAll(".film-frame");
+      const radiusX = Math.min(stage.clientWidth * 0.42, 440);
+      const radiusZ = 290;
+      const radiusY = 64;
+      const total = frames.length;
+      let frontFrame = null;
+      let frontDepth = -Infinity;
 
-      frames.forEach((frame) => {
+      frames.forEach((frame, index) => {
+        const theta = reelPhase + (index / total) * Math.PI * 2;
+        const x = Math.cos(theta) * radiusX;
+        const z = Math.sin(theta) * radiusZ;
+        const y = Math.sin(theta * 1.7 + time * 1.2) * radiusY * 0.18;
+        const depthRatio = (z + radiusZ) / (radiusZ * 2);
+        const closeness = Math.max(0.08, Math.min(1, depthRatio));
+
         if (frame.classList.contains("is-zoomed")) {
-          frame.style.transform = "translate3d(0, -6px, 140px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.16)";
+          frame.style.transform = "translate3d(-50%, -50%, 260px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.16)";
           frame.style.opacity = "1";
-          frame.style.filter = "blur(0px) saturate(1.05)";
+          frame.style.filter = "blur(0px) saturate(1.08)";
+          frame.style.zIndex = "999";
           return;
         }
 
-        const rect = frame.getBoundingClientRect();
-        const frameCenter = rect.left + rect.width / 2;
-        const normalized = (frameCenter - centerX) / (stageRect.width * 0.58);
-        const clamped = Math.max(-1.5, Math.min(1.5, normalized));
-        const closeness = Math.max(0, 1 - Math.abs(clamped));
-        const waveOffset = Math.sin(clamped * 2.6 + time * 1.7 * reel.direction) * 14;
-        const driftOffset = Math.sin(time * 0.9 + reel.direction * 1.2) * 6;
-        const zDepth = closeness * 180 - 86;
-        const rotateY = clamped * -24;
-        const rotateZ = clamped * -6;
-        const rotateX = 4 + Math.cos(time * 0.8 + clamped) * 2;
-        let scale = 0.74 + closeness * 0.33;
-        if (frame.classList.contains("is-active")) scale += 0.06;
+        const tiltY = -Math.cos(theta) * 30;
+        const tiltX = 8 + Math.sin(theta + time * 0.6) * 2.5;
+        const tiltZ = Math.sin(theta) * 3.5;
+        const scale = 0.58 + closeness * 0.56;
+        const blur = (1 - closeness) * 2.2;
+        const opacity = 0.18 + closeness * 0.88;
+        const zIndex = Math.round((z + radiusZ) * 2);
 
-        frame.style.transform = `translate3d(0, ${waveOffset + driftOffset}px, ${zDepth}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
-        frame.style.opacity = `${0.16 + closeness * 0.88}`;
-        frame.style.filter = `blur(${(1 - closeness) * 1.8}px) saturate(${0.72 + closeness * 0.44})`;
+        frame.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), ${z}px) rotateY(${tiltY}deg) rotateX(${tiltX}deg) rotateZ(${tiltZ}deg) scale(${scale})`;
+        frame.style.opacity = `${opacity}`;
+        frame.style.filter = `blur(${blur}px) saturate(${0.66 + closeness * 0.52})`;
+        frame.style.zIndex = `${zIndex}`;
+
+        if (z > frontDepth) {
+          frontDepth = z;
+          frontFrame = frame;
+        }
       });
 
-      const arcWave = Math.sin(time * 0.8 + (reel.direction > 0 ? 0 : 1.4)) * 8;
-      const baseTilt = reel.direction > 0 ? -2.4 : 2.4;
-      const roll = Math.sin(time * 0.5 + reel.direction) * 1.2;
-      reel.track.style.transform = `translate3d(0, ${arcWave}px, 0) rotateX(8deg) rotateZ(${baseTilt + roll}deg)`;
+      frames.forEach((frame) => frame.classList.remove("is-active"));
+      if (frontFrame) frontFrame.classList.add("is-active");
+
+      const trackDrift = Math.sin(time * 0.9) * 9;
+      const trackRoll = Math.sin(time * 0.45) * 1.6;
+      track.style.setProperty("--motion-blur", `${0.4 + mouseBoost * 0.45}px`);
+      track.style.transform = `translate3d(0, ${trackDrift}px, 0) rotateX(11deg) rotateZ(${trackRoll - 2.5}deg)`;
     }
 
     function animate(now) {
-      const dt = Math.max(0.6, Math.min(2.2, (now - lastFrameTime) / 16.67));
+      const dt = Math.max(0.65, Math.min(2, (now - lastFrameTime) / 16.67));
       lastFrameTime = now;
-      mouseBoost += (mouseBoostTarget - mouseBoost) * 0.1;
-      const speed = (1.9 + mouseBoost) * dt;
+      mouseBoost += (mouseBoostTarget - mouseBoost) * 0.08;
 
-      reels.forEach((reel) => {
-        const reelSpeed = reel.isHovering ? speed * 0.2 : speed;
-        if (!reel.isLocked) {
-          reel.stage.scrollLeft += reel.direction * reelSpeed;
-          if (reel.direction > 0 && reel.stage.scrollLeft >= reel.loopPoint) {
-            reel.stage.scrollLeft -= reel.loopPoint;
-          } else if (reel.direction < 0 && reel.stage.scrollLeft <= 0) {
-            reel.stage.scrollLeft += reel.loopPoint;
-          }
-        }
-        applyMotionBlur(reel, now);
-        updateActiveFrame(reel);
-        styleReelDepth(reel, now);
-      });
+      const baseSpeed = 0.0064;
+      const hoverFactor = isHoveringStage ? 0.32 : 1;
+      const speed = (baseSpeed + mouseBoost * 0.0018) * dt * hoverFactor;
+      if (!isLocked) reelPhase += speed;
 
+      styleOrbitalReel(now);
       requestAnimationFrame(animate);
     }
 
     filmSection.addEventListener("mousemove", (event) => {
       const rect = filmSection.getBoundingClientRect();
       const normalizedX = Math.abs((event.clientX - rect.left) / rect.width - 0.5) * 2;
-      const movementBoost = Math.min(3.8, Math.abs(event.movementX) * 0.16);
-      mouseBoostTarget = 0.8 + normalizedX * 1.4 + movementBoost;
+      const movementBoost = Math.min(3.4, Math.abs(event.movementX) * 0.11);
+      mouseBoostTarget = 0.85 + normalizedX * 1.1 + movementBoost;
     });
 
     filmSection.addEventListener("mouseleave", () => {
-      mouseBoostTarget = 0.8;
+      mouseBoostTarget = 0.85;
     });
 
-    reels.forEach((reel) => {
-      reel.stage.addEventListener("mouseenter", () => {
-        reel.isHovering = true;
-      });
-      reel.stage.addEventListener("mouseleave", () => {
-        reel.isHovering = false;
-      });
+    stage.addEventListener("mouseenter", () => {
+      isHoveringStage = true;
     });
-
-    function centerFrameInStage(frame, stage) {
-      const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
-      let target = frameCenter - stage.clientWidth / 2;
-      const reel = reelByStage.get(stage);
-      if (!reel) return;
-
-      if (target < 0) target += reel.loopPoint;
-      if (target > reel.loopPoint) target -= reel.loopPoint;
-      stage.scrollTo({
-        left: target,
-        behavior: "smooth"
-      });
-    }
+    stage.addEventListener("mouseleave", () => {
+      isHoveringStage = false;
+    });
 
     filmSection.addEventListener("pointerdown", (event) => {
       const clickedImage = event.target.closest("img[data-lightbox]");
@@ -259,25 +199,18 @@
       }
       const clickedFrame = event.target.closest(".film-frame");
       if (!clickedFrame) return;
-      const stage = clickedFrame.closest(".film-stage");
-      const reel = reelByStage.get(stage);
-      if (!reel) return;
-
       filmSection.querySelectorAll(".film-frame.is-zoomed").forEach((frame) => {
         frame.classList.remove("is-zoomed");
       });
       clickedFrame.classList.add("is-zoomed");
-      centerFrameInStage(clickedFrame, stage);
-      reel.isLocked = true;
+      isLocked = true;
     });
 
     window.addEventListener("pointerup", () => {
       filmSection.querySelectorAll(".film-frame.is-zoomed").forEach((frame) => {
         frame.classList.remove("is-zoomed");
       });
-      reels.forEach((reel) => {
-        reel.isLocked = false;
-      });
+      isLocked = false;
     });
 
     const lightbox = document.getElementById("image-lightbox");
