@@ -42,7 +42,7 @@
         <div class="film-track" aria-label="Film strip moving right to left">
           <article class="film-frame is-active">
             <div class="film-art">
-              <img src="assets/aurora-glitch-cover.png" alt="Sunset Aurora glitch album cover artwork" />
+              <img src="assets/aurora-glitch-cover.png" alt="Sunset Aurora glitch album cover artwork" data-lightbox />
             </div>
             <h3>Sunset Aurora</h3>
             <p>Glitch album cover balancing a natural sunset with a negative-like lower half.</p>
@@ -117,6 +117,12 @@
       <span>Multi-page portfolio — customize freely.</span>
     </div>
   </footer>
+  <div class="lightbox" id="image-lightbox" hidden>
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
+      <img id="lightbox-image" alt="" />
+    </div>
+  </div>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
 
@@ -238,6 +244,7 @@
     }
 
     filmSection.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("img[data-lightbox]")) return;
       const clickedFrame = event.target.closest(".film-frame");
       if (!clickedFrame) return;
       const stage = clickedFrame.closest(".film-stage");
@@ -259,6 +266,38 @@
       reels.forEach((reel) => {
         reel.isLocked = false;
       });
+    });
+
+    const lightbox = document.getElementById("image-lightbox");
+    const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxClose = document.getElementById("lightbox-close");
+
+    function openLightbox(image) {
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt || "Portfolio artwork";
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      lightboxImage.removeAttribute("src");
+      document.body.style.overflow = "";
+    }
+
+    filmSection.addEventListener("click", (event) => {
+      const image = event.target.closest("img[data-lightbox]");
+      if (!image) return;
+      event.stopPropagation();
+      openLightbox(image);
+    });
+
+    lightboxClose.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !lightbox.hidden) closeLightbox();
     });
 
     requestAnimationFrame(animate);
