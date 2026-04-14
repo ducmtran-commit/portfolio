@@ -1,10 +1,10 @@
 :root {
-  --bg: #f7f4ef;
-  --surface: #fffefb;
-  --ink: #1a1816;
-  --muted: #5c5854;
-  --accent: #2d4a3e;
-  --line: rgba(26, 24, 22, 0.12);
+  --bg: #020403;
+  --surface: #141413;
+  --ink: #f5f1ea;
+  --muted: #b8aaa0;
+  --accent: #5f2e1b;
+  --line: rgba(26, 35, 36, 0.65);
   --max: 72rem;
   --space: clamp(1.25rem, 4vw, 2.5rem);
 }
@@ -226,7 +226,7 @@ section h2 {
 
 .teaser-card:hover {
   border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
-  box-shadow: 0 6px 24px rgba(26, 24, 22, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
   opacity: 1;
 }
 
@@ -266,7 +266,7 @@ section h2 {
 
 .project-thumb {
   aspect-ratio: 4 / 3;
-  background: linear-gradient(145deg, #e8e4dc, #d4cfc5);
+  background: linear-gradient(145deg, #1a2324, #5f2e1b);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -305,7 +305,7 @@ section h2 {
 .about-photo {
   aspect-ratio: 3 / 4;
   max-width: 20rem;
-  background: linear-gradient(160deg, #dfe8e3, #c9d4ce);
+  background: linear-gradient(160deg, #1a2324, #5f2e1b);
   border-radius: 0.35rem;
   border: 1px solid var(--line);
   display: flex;
