@@ -37,7 +37,7 @@
         <div class="projects-grid">
           <article class="project-card">
             <div class="project-thumb">
-              <img src="assets/aurora-glitch-cover.png" alt="Sunset Aurora glitched album cover artwork" />
+              <img src="assets/aurora-glitch-cover.png" alt="Sunset Aurora glitched album cover artwork" data-lightbox />
             </div>
             <div class="project-body">
               <h3>Sunset Aurora</h3>
@@ -72,8 +72,45 @@
       <span><a href="index.html">Home</a></span>
     </div>
   </footer>
+  <div class="lightbox" id="image-lightbox" hidden>
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
+      <img id="lightbox-image" alt="" />
+    </div>
+  </div>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
+
+    const lightbox = document.getElementById("image-lightbox");
+    const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxClose = document.getElementById("lightbox-close");
+
+    function openLightbox(image) {
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt || "Portfolio artwork";
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      lightboxImage.removeAttribute("src");
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("click", (event) => {
+      const image = event.target.closest("img[data-lightbox]");
+      if (!image) return;
+      openLightbox(image);
+    });
+
+    lightboxClose.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !lightbox.hidden) closeLightbox();
+    });
   </script>
 </body>
 </html>
