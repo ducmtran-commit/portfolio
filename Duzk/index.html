@@ -37,17 +37,9 @@
       </div>
     </div>
 
-    <section id="film-strip" class="home-highlights film-experience" aria-labelledby="explore-heading">
-      <div class="wrap">
-        <h2 id="explore-heading">35mm film strip portfolio</h2>
-        <p class="sub">Scroll, drag, or autoplay the reel. The center frame is the active project, like a running animation strip.</p>
-        <div class="film-controls">
-          <button id="autoplay-toggle" class="hero-cta film-btn" type="button" aria-pressed="false">Start Auto-Play</button>
-          <span class="film-hint">Hover the strip to pause motion.</span>
-        </div>
-      </div>
-      <div class="film-stage" id="film-stage">
-        <div class="film-track" id="film-track" aria-label="Horizontal film strip of digital artworks">
+    <section id="film-strip" class="home-highlights film-experience" aria-label="Animated film strip portfolio">
+      <div class="film-stage" data-direction="rtl">
+        <div class="film-track" aria-label="Film strip moving right to left">
           <article class="film-frame is-active">
             <div class="film-art">Frame 01</div>
             <h3>Neon Memory Atlas</h3>
@@ -80,6 +72,40 @@
           </article>
         </div>
       </div>
+      <div class="film-stage" data-direction="ltr">
+        <div class="film-track" aria-label="Film strip moving left to right">
+          <article class="film-frame">
+            <div class="film-art">Frame 07</div>
+            <h3>Signal Arcade</h3>
+            <p>Retro-inspired visual experiments with animated texture loops.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 08</div>
+            <h3>Night Courier</h3>
+            <p>Character design exploration influenced by action cartoons.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 09</div>
+            <h3>Soft Glitch Diary</h3>
+            <p>Hybrid collage studies using code visuals and digital paint.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 10</div>
+            <h3>Orbit Bloom</h3>
+            <p>Stylized color scripts with unpredictable sci-fi compositions.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 11</div>
+            <h3>Stickerverse</h3>
+            <p>Playful icon sets and motion-ready assets for UI worlds.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 12</div>
+            <h3>After Rain Render</h3>
+            <p>Atmospheric scene studies focused on reflections and depth.</p>
+          </article>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -92,110 +118,95 @@
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
 
-    const stage = document.getElementById("film-stage");
-    const track = document.getElementById("film-track");
-    const frames = Array.from(track.querySelectorAll(".film-frame"));
-    const autoPlayBtn = document.getElementById("autoplay-toggle");
+    const filmSection = document.getElementById("film-strip");
+    const reels = Array.from(document.querySelectorAll(".film-stage")).map((stage) => {
+      const track = stage.querySelector(".film-track");
+      const frames = Array.from(track.querySelectorAll(".film-frame"));
+      const clones = frames.map((frame) => frame.cloneNode(true));
+      clones.forEach((clone) => {
+        clone.classList.remove("is-active");
+        track.appendChild(clone);
+      });
 
-    let isDragging = false;
-    let dragStartX = 0;
-    let startScrollLeft = 0;
-    let autoPlayOn = false;
-    let hoverPaused = false;
-    let animationId = null;
-    let lastScrollLeft = stage.scrollLeft;
-    let lastTick = performance.now();
+      const loopPoint = track.scrollWidth / 2;
+      const direction = stage.dataset.direction === "ltr" ? -1 : 1;
+      stage.scrollLeft = direction < 0 ? loopPoint : 0;
 
-    function updateActiveFrame() {
-      const stageRect = stage.getBoundingClientRect();
+      return {
+        stage,
+        track,
+        direction,
+        loopPoint,
+        lastScrollLeft: stage.scrollLeft,
+        lastTick: performance.now()
+      };
+    });
+
+    let mouseBoost = 0.8;
+    let mouseBoostTarget = 0.8;
+    let lastFrameTime = performance.now();
+
+    function updateActiveFrame(reel) {
+      const stageRect = reel.stage.getBoundingClientRect();
       const centerX = stageRect.left + stageRect.width / 2;
+      const frames = reel.track.querySelectorAll(".film-frame");
 
       let nearest = null;
       let nearestDistance = Infinity;
-
       frames.forEach((frame) => {
         const rect = frame.getBoundingClientRect();
         const frameCenter = rect.left + rect.width / 2;
         const distance = Math.abs(centerX - frameCenter);
         if (distance < nearestDistance) {
-          nearestDistance = distance;
           nearest = frame;
+          nearestDistance = distance;
         }
         frame.classList.remove("is-active");
       });
-
       if (nearest) nearest.classList.add("is-active");
     }
 
-    function applyMotionBlur(now) {
-      const dt = Math.max(16, now - lastTick);
-      const velocity = Math.abs(stage.scrollLeft - lastScrollLeft) / dt;
-      const blur = Math.min(8, velocity * 1.8);
-      track.style.setProperty("--motion-blur", `${blur.toFixed(2)}px`);
-      lastScrollLeft = stage.scrollLeft;
-      lastTick = now;
+    function applyMotionBlur(reel, now) {
+      const dt = Math.max(16, now - reel.lastTick);
+      const velocity = Math.abs(reel.stage.scrollLeft - reel.lastScrollLeft) / dt;
+      const blur = Math.min(10, velocity * 2.1);
+      reel.track.style.setProperty("--motion-blur", `${blur.toFixed(2)}px`);
+      reel.lastScrollLeft = reel.stage.scrollLeft;
+      reel.lastTick = now;
     }
 
-    function tick(now) {
-      applyMotionBlur(now);
-      updateActiveFrame();
+    function animate(now) {
+      const dt = Math.max(0.6, Math.min(2.2, (now - lastFrameTime) / 16.67));
+      lastFrameTime = now;
+      mouseBoost += (mouseBoostTarget - mouseBoost) * 0.1;
+      const speed = (1.9 + mouseBoost) * dt;
 
-      if (autoPlayOn && !hoverPaused && !isDragging) {
-        const maxScroll = stage.scrollWidth - stage.clientWidth;
-        stage.scrollLeft += 1;
-        if (stage.scrollLeft >= maxScroll) stage.scrollLeft = 0;
-      }
+      reels.forEach((reel) => {
+        reel.stage.scrollLeft += reel.direction * speed;
+        if (reel.direction > 0 && reel.stage.scrollLeft >= reel.loopPoint) {
+          reel.stage.scrollLeft -= reel.loopPoint;
+        } else if (reel.direction < 0 && reel.stage.scrollLeft <= 0) {
+          reel.stage.scrollLeft += reel.loopPoint;
+        }
+        applyMotionBlur(reel, now);
+        updateActiveFrame(reel);
+      });
 
-      animationId = requestAnimationFrame(tick);
+      requestAnimationFrame(animate);
     }
 
-    function setAutoplay(state) {
-      autoPlayOn = state;
-      autoPlayBtn.setAttribute("aria-pressed", String(state));
-      autoPlayBtn.textContent = state ? "Stop Auto-Play" : "Start Auto-Play";
-    }
-
-    stage.addEventListener("wheel", (event) => {
-      event.preventDefault();
-      stage.scrollLeft += event.deltaY + event.deltaX;
-    }, { passive: false });
-
-    stage.addEventListener("mousedown", (event) => {
-      isDragging = true;
-      dragStartX = event.clientX;
-      startScrollLeft = stage.scrollLeft;
-      stage.classList.add("is-dragging");
+    filmSection.addEventListener("mousemove", (event) => {
+      const rect = filmSection.getBoundingClientRect();
+      const normalizedX = Math.abs((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      const movementBoost = Math.min(3.8, Math.abs(event.movementX) * 0.16);
+      mouseBoostTarget = 0.8 + normalizedX * 1.4 + movementBoost;
     });
 
-    window.addEventListener("mousemove", (event) => {
-      if (!isDragging) return;
-      const delta = event.clientX - dragStartX;
-      stage.scrollLeft = startScrollLeft - delta;
+    filmSection.addEventListener("mouseleave", () => {
+      mouseBoostTarget = 0.8;
     });
 
-    window.addEventListener("mouseup", () => {
-      isDragging = false;
-      stage.classList.remove("is-dragging");
-    });
-
-    stage.addEventListener("mouseenter", () => {
-      hoverPaused = true;
-    });
-
-    stage.addEventListener("mouseleave", () => {
-      if (isDragging) {
-        isDragging = false;
-        stage.classList.remove("is-dragging");
-      }
-      hoverPaused = false;
-    });
-
-    autoPlayBtn.addEventListener("click", () => {
-      setAutoplay(!autoPlayOn);
-    });
-
-    updateActiveFrame();
-    animationId = requestAnimationFrame(tick);
+    requestAnimationFrame(animate);
   </script>
 </body>
 </html>
