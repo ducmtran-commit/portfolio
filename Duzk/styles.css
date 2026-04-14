@@ -218,7 +218,7 @@ section h2 {
   --frame-size: min(78vw, 24rem);
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0.85rem var(--space) 1.45rem;
+  padding: 1.1rem var(--space) 1.65rem;
   scrollbar-width: none;
 }
 
@@ -248,6 +248,7 @@ section h2 {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
   opacity: 0.45;
   transform: scale(0.93);
+  cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
 }
 
@@ -279,6 +280,14 @@ section h2 {
   opacity: 1;
   transform: scale(1.02);
   border-color: #5f2e1b;
+}
+
+.film-frame.is-zoomed {
+  opacity: 1;
+  transform: scale(1.16);
+  border-color: #5f2e1b;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 14px 34px rgba(0, 0, 0, 0.55);
+  z-index: 3;
 }
 
 .film-art {
