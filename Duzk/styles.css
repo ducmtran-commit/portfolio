@@ -220,6 +220,8 @@ section h2 {
   overflow-y: hidden;
   padding: 1.1rem var(--space) 1.65rem;
   scrollbar-width: none;
+  perspective: 1400px;
+  perspective-origin: center;
 }
 
 .film-stage::-webkit-scrollbar {
@@ -235,9 +237,16 @@ section h2 {
   padding-inline: 22vw;
   filter: blur(var(--motion-blur));
   transition: filter 0.07s linear;
+  transform-style: preserve-3d;
 }
 
 .film-frame {
+  --frame-opacity: 0.45;
+  --frame-scale: 0.93;
+  --frame-blur: 1.8px;
+  --curve-y: 28px;
+  --x-tilt: 16deg;
+  --z-depth: -80px;
   width: var(--frame-size);
   background: #020403;
   border: 2px solid #1a2324;
@@ -246,10 +255,11 @@ section h2 {
   flex: 0 0 auto;
   position: relative;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
-  opacity: 0.45;
-  transform: scale(0.93);
+  opacity: var(--frame-opacity);
+  filter: blur(var(--frame-blur));
+  transform: translateY(var(--curve-y)) translateZ(var(--z-depth)) rotateY(var(--x-tilt)) scale(var(--frame-scale));
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.22s ease, opacity 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
 }
 
 .film-frame::before,
@@ -278,13 +288,15 @@ section h2 {
 
 .film-frame.is-active {
   opacity: 1;
-  transform: scale(1.02);
+  filter: blur(0);
+  transform: translateY(0) translateZ(0) rotateY(0deg) scale(1.03);
   border-color: #5f2e1b;
 }
 
 .film-frame.is-zoomed {
   opacity: 1;
-  transform: scale(1.16);
+  filter: blur(0);
+  transform: translateY(0) translateZ(80px) rotateY(0deg) scale(1.16);
   border-color: #5f2e1b;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 14px 34px rgba(0, 0, 0, 0.55);
   z-index: 3;
