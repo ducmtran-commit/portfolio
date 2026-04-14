@@ -209,56 +209,21 @@ section h2 {
 
 .film-experience {
   border-bottom: none;
-}
-
-.film-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
-}
-
-.film-btn {
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
-.film-btn[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--ink);
-}
-
-.film-hint {
-  color: var(--muted);
-  font-size: 0.9rem;
+  display: grid;
+  gap: 1.2rem;
+  padding-top: 0.8rem;
 }
 
 .film-stage {
   --frame-size: min(78vw, 24rem);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-behavior: smooth;
-  padding: 1.25rem var(--space) 2rem;
-  cursor: grab;
-  user-select: none;
-  position: relative;
-}
-
-.film-stage.is-dragging {
-  cursor: grabbing;
+  padding: 0.85rem var(--space) 1.45rem;
+  scrollbar-width: none;
 }
 
 .film-stage::-webkit-scrollbar {
-  height: 0.55rem;
-}
-
-.film-stage::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--accent) 50%, #000);
-  border-radius: 999px;
+  display: none;
 }
 
 .film-track {
@@ -267,9 +232,9 @@ section h2 {
   gap: 1.25rem;
   align-items: stretch;
   width: max-content;
-  padding-inline: 34vw;
+  padding-inline: 22vw;
   filter: blur(var(--motion-blur));
-  transition: filter 0.09s linear;
+  transition: filter 0.07s linear;
 }
 
 .film-frame {
