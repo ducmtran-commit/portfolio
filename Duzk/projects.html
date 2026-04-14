@@ -98,9 +98,10 @@
       document.body.style.overflow = "";
     }
 
-    document.addEventListener("click", (event) => {
+    document.addEventListener("pointerdown", (event) => {
       const image = event.target.closest("img[data-lightbox]");
       if (!image) return;
+      event.preventDefault();
       openLightbox(image);
     });
 
