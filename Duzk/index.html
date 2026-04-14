@@ -33,31 +33,51 @@
         <p class="tagline">
           Digital Artist focused on concept art, illustration, and visual experiments for interactive media.
         </p>
-        <a class="hero-cta" href="projects.html">View selected work</a>
+        <a class="hero-cta" href="#film-strip">View film reel</a>
       </div>
     </div>
 
-    <section class="home-highlights" aria-labelledby="explore-heading">
+    <section id="film-strip" class="home-highlights film-experience" aria-labelledby="explore-heading">
       <div class="wrap">
-        <h2 id="explore-heading">Explore</h2>
-        <p class="sub">Jump to the full pages for statement, projects, bio, and ways to reach you.</p>
-        <div class="teaser-grid">
-          <a class="teaser-card" href="statement.html">
-            <h3>Artist statement</h3>
-            <p>Ideas, themes, and what drives your practice.</p>
-          </a>
-          <a class="teaser-card" href="projects.html">
-            <h3>Projects</h3>
-            <p>Selected digital works, tools, and recent series.</p>
-          </a>
-          <a class="teaser-card" href="about.html">
-            <h3>About</h3>
-            <p>Background, workflow, and what you are creating now.</p>
-          </a>
-          <a class="teaser-card" href="contact.html">
-            <h3>Contact</h3>
-            <p>Email and socials for commissions and collaboration.</p>
-          </a>
+        <h2 id="explore-heading">35mm film strip portfolio</h2>
+        <p class="sub">Scroll, drag, or autoplay the reel. The center frame is the active project, like a running animation strip.</p>
+        <div class="film-controls">
+          <button id="autoplay-toggle" class="hero-cta film-btn" type="button" aria-pressed="false">Start Auto-Play</button>
+          <span class="film-hint">Hover the strip to pause motion.</span>
+        </div>
+      </div>
+      <div class="film-stage" id="film-stage">
+        <div class="film-track" id="film-track" aria-label="Horizontal film strip of digital artworks">
+          <article class="film-frame is-active">
+            <div class="film-art">Frame 01</div>
+            <h3>Neon Memory Atlas</h3>
+            <p>Digital painting series exploring luminous city dreams.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 02</div>
+            <h3>Echoes in Transit</h3>
+            <p>Narrative environment studies for interactive worlds.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 03</div>
+            <h3>Synthetic Bloom</h3>
+            <p>Motion loops blending organic and machine-like forms.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 04</div>
+            <h3>Afterlight Cartoons</h3>
+            <p>Playful character explorations inspired by animation.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 05</div>
+            <h3>Dream HUD</h3>
+            <p>Experimental UI art with colorful futuristic overlays.</p>
+          </article>
+          <article class="film-frame">
+            <div class="film-art">Frame 06</div>
+            <h3>Glitch Garden</h3>
+            <p>Mixed-media composites made from scans and code visuals.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -71,6 +91,111 @@
   </footer>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
+
+    const stage = document.getElementById("film-stage");
+    const track = document.getElementById("film-track");
+    const frames = Array.from(track.querySelectorAll(".film-frame"));
+    const autoPlayBtn = document.getElementById("autoplay-toggle");
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let startScrollLeft = 0;
+    let autoPlayOn = false;
+    let hoverPaused = false;
+    let animationId = null;
+    let lastScrollLeft = stage.scrollLeft;
+    let lastTick = performance.now();
+
+    function updateActiveFrame() {
+      const stageRect = stage.getBoundingClientRect();
+      const centerX = stageRect.left + stageRect.width / 2;
+
+      let nearest = null;
+      let nearestDistance = Infinity;
+
+      frames.forEach((frame) => {
+        const rect = frame.getBoundingClientRect();
+        const frameCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(centerX - frameCenter);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = frame;
+        }
+        frame.classList.remove("is-active");
+      });
+
+      if (nearest) nearest.classList.add("is-active");
+    }
+
+    function applyMotionBlur(now) {
+      const dt = Math.max(16, now - lastTick);
+      const velocity = Math.abs(stage.scrollLeft - lastScrollLeft) / dt;
+      const blur = Math.min(8, velocity * 1.8);
+      track.style.setProperty("--motion-blur", `${blur.toFixed(2)}px`);
+      lastScrollLeft = stage.scrollLeft;
+      lastTick = now;
+    }
+
+    function tick(now) {
+      applyMotionBlur(now);
+      updateActiveFrame();
+
+      if (autoPlayOn && !hoverPaused && !isDragging) {
+        const maxScroll = stage.scrollWidth - stage.clientWidth;
+        stage.scrollLeft += 1;
+        if (stage.scrollLeft >= maxScroll) stage.scrollLeft = 0;
+      }
+
+      animationId = requestAnimationFrame(tick);
+    }
+
+    function setAutoplay(state) {
+      autoPlayOn = state;
+      autoPlayBtn.setAttribute("aria-pressed", String(state));
+      autoPlayBtn.textContent = state ? "Stop Auto-Play" : "Start Auto-Play";
+    }
+
+    stage.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      stage.scrollLeft += event.deltaY + event.deltaX;
+    }, { passive: false });
+
+    stage.addEventListener("mousedown", (event) => {
+      isDragging = true;
+      dragStartX = event.clientX;
+      startScrollLeft = stage.scrollLeft;
+      stage.classList.add("is-dragging");
+    });
+
+    window.addEventListener("mousemove", (event) => {
+      if (!isDragging) return;
+      const delta = event.clientX - dragStartX;
+      stage.scrollLeft = startScrollLeft - delta;
+    });
+
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      stage.classList.remove("is-dragging");
+    });
+
+    stage.addEventListener("mouseenter", () => {
+      hoverPaused = true;
+    });
+
+    stage.addEventListener("mouseleave", () => {
+      if (isDragging) {
+        isDragging = false;
+        stage.classList.remove("is-dragging");
+      }
+      hoverPaused = false;
+    });
+
+    autoPlayBtn.addEventListener("click", () => {
+      setAutoplay(!autoPlayOn);
+    });
+
+    updateActiveFrame();
+    animationId = requestAnimationFrame(tick);
   </script>
 </body>
 </html>
