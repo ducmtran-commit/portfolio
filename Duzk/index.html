@@ -162,6 +162,7 @@
       const centerX = stageRect.left + stageRect.width / 2;
       const frames = reel.track.querySelectorAll(".film-frame");
       const maxDistance = stageRect.width * 0.55;
+      const flowDirection = reel.direction > 0 ? 1 : -1;
 
       let nearest = null;
       let nearestDistance = Infinity;
@@ -173,15 +174,19 @@
         const proximity = Math.max(0, 1 - distance / maxDistance);
         const side = signedDistance >= 0 ? 1 : -1;
 
-        const edge = (1 - proximity);
-        const bend = Math.pow(edge, 1.25);
-        frame.style.setProperty("--frame-opacity", (0.22 + proximity * 0.78).toFixed(3));
-        frame.style.setProperty("--frame-scale", (0.8 + proximity * 0.24).toFixed(3));
-        frame.style.setProperty("--frame-blur", `${(3.6 - proximity * 3.6).toFixed(2)}px`);
-        frame.style.setProperty("--curve-y", `${(bend * 54).toFixed(2)}px`);
-        frame.style.setProperty("--x-tilt", `${(-side * bend * 27).toFixed(2)}deg`);
-        frame.style.setProperty("--z-lean", `${(-side * bend * 9).toFixed(2)}deg`);
-        frame.style.setProperty("--z-depth", `${(-(bend * 210)).toFixed(2)}px`);
+        const edge = 1 - proximity;
+        const bend = Math.pow(edge, 1.35);
+        const spiral = Math.sin((signedDistance / maxDistance) * Math.PI * 0.75);
+        const towardVanish = ((signedDistance * flowDirection) / maxDistance + 1) / 2;
+
+        frame.style.setProperty("--frame-opacity", (0.14 + proximity * 0.86).toFixed(3));
+        frame.style.setProperty("--frame-scale", (0.58 + proximity * 0.46).toFixed(3));
+        frame.style.setProperty("--frame-blur", `${(5.1 - proximity * 5.1).toFixed(2)}px`);
+        frame.style.setProperty("--curve-y", `${(spiral * 30 + bend * 42).toFixed(2)}px`);
+        frame.style.setProperty("--frame-x", `${(side * bend * 10).toFixed(2)}px`);
+        frame.style.setProperty("--x-tilt", `${(-flowDirection * (10 + towardVanish * 34)).toFixed(2)}deg`);
+        frame.style.setProperty("--z-lean", `${(-side * bend * 14).toFixed(2)}deg`);
+        frame.style.setProperty("--z-depth", `${(-(70 + towardVanish * 360 + bend * 130)).toFixed(2)}px`);
 
         if (distance < nearestDistance) {
           nearest = frame;
