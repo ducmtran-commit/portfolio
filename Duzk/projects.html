@@ -107,7 +107,8 @@
 
     lightboxClose.addEventListener("click", closeLightbox);
     lightbox.addEventListener("click", (event) => {
-      if (event.target === lightbox) closeLightbox();
+      if (event.target.closest("#lightbox-image")) return;
+      closeLightbox();
     });
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !lightbox.hidden) closeLightbox();
