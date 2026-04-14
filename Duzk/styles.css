@@ -220,8 +220,8 @@ section h2 {
   overflow-y: hidden;
   padding: 1.1rem var(--space) 1.65rem;
   scrollbar-width: none;
-  perspective: 2200px;
-  perspective-origin: 62% 50%;
+  perspective: 1400px;
+  perspective-origin: center;
   position: relative;
 }
 
@@ -237,49 +237,27 @@ section h2 {
   width: max-content;
   padding-inline: 22vw;
   filter: blur(var(--motion-blur));
-  transition: filter 0.07s linear;
+  transition: filter 0.07s linear, transform 0.3s ease-out;
   transform-style: preserve-3d;
-}
-
-.film-stage[data-direction="rtl"] .film-track {
-  transform: rotateX(12deg) rotateY(6deg) rotateZ(-5deg);
-}
-
-.film-stage[data-direction="ltr"] .film-track {
-  transform: rotateX(-11deg) rotateY(-6deg) rotateZ(5deg);
-}
-
-.film-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgba(2, 4, 3, 0.86) 0%, transparent 18%, transparent 82%, rgba(2, 4, 3, 0.86) 100%);
-  z-index: 2;
+  will-change: transform, filter;
 }
 
 .film-frame {
-  --frame-opacity: 0.45;
-  --frame-scale: 0.93;
-  --frame-blur: 1.8px;
-  --curve-y: 28px;
-  --x-tilt: 16deg;
-  --z-lean: 0deg;
-  --z-depth: -80px;
-  --frame-x: 0px;
   width: var(--frame-size);
-  background: #020403;
+  background: rgba(2, 4, 3, 0.82);
   border: 2px solid #1a2324;
   border-radius: 0.4rem;
   padding: 0.9rem;
   flex: 0 0 auto;
   position: relative;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
-  opacity: var(--frame-opacity);
-  filter: blur(var(--frame-blur));
-  transform: translateX(var(--frame-x)) translateY(var(--curve-y)) translateZ(var(--z-depth)) rotateY(var(--x-tilt)) rotateZ(var(--z-lean)) scale(var(--frame-scale));
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  opacity: 0.45;
+  transform: translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(0.93);
   cursor: pointer;
-  transition: transform 0.22s ease, opacity 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
+  transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  backdrop-filter: blur(1px);
 }
 
 .film-frame::before,
@@ -306,17 +284,27 @@ section h2 {
   bottom: 0.2rem;
 }
 
+.film-frame::selection {
+  background: transparent;
+}
+
+.film-frame .film-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(108deg, rgba(255, 255, 255, 0.16), transparent 42%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
 .film-frame.is-active {
   opacity: 1;
-  filter: blur(0);
-  transform: translateX(0) translateY(0) translateZ(0) rotateY(0deg) rotateZ(0deg) scale(1.04);
   border-color: #5f2e1b;
+  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .film-frame.is-zoomed {
   opacity: 1;
-  filter: blur(0);
-  transform: translateY(0) translateZ(80px) rotateY(0deg) scale(1.16);
   border-color: #5f2e1b;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 14px 34px rgba(0, 0, 0, 0.55);
   z-index: 3;
@@ -336,6 +324,7 @@ section h2 {
   text-transform: uppercase;
   margin: 0.6rem 0 0.75rem;
   overflow: hidden;
+  position: relative;
 }
 
 .film-art img {
