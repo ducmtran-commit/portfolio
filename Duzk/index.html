@@ -137,6 +137,7 @@
         track,
         direction,
         loopPoint,
+        isPaused: false,
         lastScrollLeft: stage.scrollLeft,
         lastTick: performance.now()
       };
@@ -182,11 +183,13 @@
       const speed = (1.9 + mouseBoost) * dt;
 
       reels.forEach((reel) => {
-        reel.stage.scrollLeft += reel.direction * speed;
-        if (reel.direction > 0 && reel.stage.scrollLeft >= reel.loopPoint) {
-          reel.stage.scrollLeft -= reel.loopPoint;
-        } else if (reel.direction < 0 && reel.stage.scrollLeft <= 0) {
-          reel.stage.scrollLeft += reel.loopPoint;
+        if (!reel.isPaused) {
+          reel.stage.scrollLeft += reel.direction * speed;
+          if (reel.direction > 0 && reel.stage.scrollLeft >= reel.loopPoint) {
+            reel.stage.scrollLeft -= reel.loopPoint;
+          } else if (reel.direction < 0 && reel.stage.scrollLeft <= 0) {
+            reel.stage.scrollLeft += reel.loopPoint;
+          }
         }
         applyMotionBlur(reel, now);
         updateActiveFrame(reel);
@@ -204,6 +207,29 @@
 
     filmSection.addEventListener("mouseleave", () => {
       mouseBoostTarget = 0.8;
+    });
+
+    reels.forEach((reel) => {
+      reel.stage.addEventListener("mouseenter", () => {
+        reel.isPaused = true;
+      });
+      reel.stage.addEventListener("mouseleave", () => {
+        reel.isPaused = false;
+      });
+    });
+
+    filmSection.addEventListener("click", (event) => {
+      const clickedFrame = event.target.closest(".film-frame");
+      if (!clickedFrame) return;
+
+      const shouldZoom = !clickedFrame.classList.contains("is-zoomed");
+      filmSection.querySelectorAll(".film-frame.is-zoomed").forEach((frame) => {
+        frame.classList.remove("is-zoomed");
+      });
+
+      if (shouldZoom) {
+        clickedFrame.classList.add("is-zoomed");
+      }
     });
 
     requestAnimationFrame(animate);
