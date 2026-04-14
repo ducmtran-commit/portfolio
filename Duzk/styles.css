@@ -311,6 +311,7 @@ section h2 {
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: zoom-in;
 }
 
 .film-frame h3 {
@@ -399,6 +400,7 @@ section h2 {
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: zoom-in;
 }
 
 .project-body {
@@ -436,8 +438,8 @@ section h2 {
 }
 
 .lightbox-inner {
-  width: min(88vw, 88vh);
-  height: min(88vh, 88vw);
+  width: 86vw;
+  height: 86vh;
   min-width: 80vw;
   min-height: 80vh;
   max-width: 95vw;
