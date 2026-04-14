@@ -421,6 +421,57 @@ section h2 {
   line-height: 1.6;
 }
 
+.lightbox {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 4, 3, 0.86);
+  padding: 2rem;
+  z-index: 80;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox-inner {
+  width: min(88vw, 88vh);
+  height: min(88vh, 88vw);
+  min-width: 80vw;
+  min-height: 80vh;
+  max-width: 95vw;
+  max-height: 95vh;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 14px 48px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
 .about-layout {
   display: grid;
   gap: 2rem;
