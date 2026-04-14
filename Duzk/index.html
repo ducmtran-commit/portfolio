@@ -137,11 +137,13 @@
         track,
         direction,
         loopPoint,
-        isPaused: false,
+        isLocked: false,
+        isHovering: false,
         lastScrollLeft: stage.scrollLeft,
         lastTick: performance.now()
       };
     });
+    const reelByStage = new Map(reels.map((reel) => [reel.stage, reel]));
 
     let mouseBoost = 0.8;
     let mouseBoostTarget = 0.8;
@@ -183,8 +185,9 @@
       const speed = (1.9 + mouseBoost) * dt;
 
       reels.forEach((reel) => {
-        if (!reel.isPaused) {
-          reel.stage.scrollLeft += reel.direction * speed;
+        const reelSpeed = reel.isHovering ? speed * 0.2 : speed;
+        if (!reel.isLocked) {
+          reel.stage.scrollLeft += reel.direction * reelSpeed;
           if (reel.direction > 0 && reel.stage.scrollLeft >= reel.loopPoint) {
             reel.stage.scrollLeft -= reel.loopPoint;
           } else if (reel.direction < 0 && reel.stage.scrollLeft <= 0) {
@@ -211,25 +214,46 @@
 
     reels.forEach((reel) => {
       reel.stage.addEventListener("mouseenter", () => {
-        reel.isPaused = true;
+        reel.isHovering = true;
       });
       reel.stage.addEventListener("mouseleave", () => {
-        reel.isPaused = false;
+        reel.isHovering = false;
       });
     });
 
-    filmSection.addEventListener("click", (event) => {
+    function centerFrameInStage(frame, stage) {
+      const frameCenter = frame.offsetLeft + frame.offsetWidth / 2;
+      let target = frameCenter - stage.clientWidth / 2;
+      const reel = reelByStage.get(stage);
+      if (!reel) return;
+
+      if (target < 0) target += reel.loopPoint;
+      if (target > reel.loopPoint) target -= reel.loopPoint;
+      stage.scrollLeft = target;
+    }
+
+    filmSection.addEventListener("pointerdown", (event) => {
       const clickedFrame = event.target.closest(".film-frame");
       if (!clickedFrame) return;
+      const stage = clickedFrame.closest(".film-stage");
+      const reel = reelByStage.get(stage);
+      if (!reel) return;
 
-      const shouldZoom = !clickedFrame.classList.contains("is-zoomed");
       filmSection.querySelectorAll(".film-frame.is-zoomed").forEach((frame) => {
         frame.classList.remove("is-zoomed");
       });
+      clickedFrame.classList.add("is-zoomed");
+      centerFrameInStage(clickedFrame, stage);
+      reel.isLocked = true;
+    });
 
-      if (shouldZoom) {
-        clickedFrame.classList.add("is-zoomed");
-      }
+    window.addEventListener("pointerup", () => {
+      filmSection.querySelectorAll(".film-frame.is-zoomed").forEach((frame) => {
+        frame.classList.remove("is-zoomed");
+      });
+      reels.forEach((reel) => {
+        reel.isLocked = false;
+      });
     });
 
     requestAnimationFrame(animate);
