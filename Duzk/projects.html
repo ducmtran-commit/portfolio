@@ -106,7 +106,7 @@
     });
 
     lightboxClose.addEventListener("click", closeLightbox);
-    lightbox.addEventListener("click", (event) => {
+    lightbox.addEventListener("pointerdown", (event) => {
       if (event.target.closest("#lightbox-image")) return;
       closeLightbox();
     });
