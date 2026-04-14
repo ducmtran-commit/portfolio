@@ -161,33 +161,13 @@
       const stageRect = reel.stage.getBoundingClientRect();
       const centerX = stageRect.left + stageRect.width / 2;
       const frames = reel.track.querySelectorAll(".film-frame");
-      const maxDistance = stageRect.width * 0.55;
-      const flowDirection = reel.direction > 0 ? 1 : -1;
 
       let nearest = null;
       let nearestDistance = Infinity;
       frames.forEach((frame) => {
         const rect = frame.getBoundingClientRect();
         const frameCenter = rect.left + rect.width / 2;
-        const signedDistance = frameCenter - centerX;
-        const distance = Math.abs(signedDistance);
-        const proximity = Math.max(0, 1 - distance / maxDistance);
-        const side = signedDistance >= 0 ? 1 : -1;
-
-        const edge = 1 - proximity;
-        const bend = Math.pow(edge, 1.35);
-        const spiral = Math.sin((signedDistance / maxDistance) * Math.PI * 0.75);
-        const towardVanish = ((signedDistance * flowDirection) / maxDistance + 1) / 2;
-
-        frame.style.setProperty("--frame-opacity", (0.14 + proximity * 0.86).toFixed(3));
-        frame.style.setProperty("--frame-scale", (0.58 + proximity * 0.46).toFixed(3));
-        frame.style.setProperty("--frame-blur", `${(5.1 - proximity * 5.1).toFixed(2)}px`);
-        frame.style.setProperty("--curve-y", `${(spiral * 30 + bend * 42).toFixed(2)}px`);
-        frame.style.setProperty("--frame-x", `${(side * bend * 10).toFixed(2)}px`);
-        frame.style.setProperty("--x-tilt", `${(-flowDirection * (10 + towardVanish * 34)).toFixed(2)}deg`);
-        frame.style.setProperty("--z-lean", `${(-side * bend * 14).toFixed(2)}deg`);
-        frame.style.setProperty("--z-depth", `${(-(70 + towardVanish * 360 + bend * 130)).toFixed(2)}px`);
-
+        const distance = Math.abs(centerX - frameCenter);
         if (distance < nearestDistance) {
           nearest = frame;
           nearestDistance = distance;
@@ -204,6 +184,45 @@
       reel.track.style.setProperty("--motion-blur", `${blur.toFixed(2)}px`);
       reel.lastScrollLeft = reel.stage.scrollLeft;
       reel.lastTick = now;
+    }
+
+    function styleReelDepth(reel, now) {
+      const stageRect = reel.stage.getBoundingClientRect();
+      const centerX = stageRect.left + stageRect.width / 2;
+      const time = now * 0.001;
+      const frames = reel.track.querySelectorAll(".film-frame");
+
+      frames.forEach((frame) => {
+        if (frame.classList.contains("is-zoomed")) {
+          frame.style.transform = "translate3d(0, -6px, 140px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.16)";
+          frame.style.opacity = "1";
+          frame.style.filter = "blur(0px) saturate(1.05)";
+          return;
+        }
+
+        const rect = frame.getBoundingClientRect();
+        const frameCenter = rect.left + rect.width / 2;
+        const normalized = (frameCenter - centerX) / (stageRect.width * 0.58);
+        const clamped = Math.max(-1.5, Math.min(1.5, normalized));
+        const closeness = Math.max(0, 1 - Math.abs(clamped));
+        const waveOffset = Math.sin(clamped * 2.6 + time * 1.7 * reel.direction) * 14;
+        const driftOffset = Math.sin(time * 0.9 + reel.direction * 1.2) * 6;
+        const zDepth = closeness * 180 - 86;
+        const rotateY = clamped * -24;
+        const rotateZ = clamped * -6;
+        const rotateX = 4 + Math.cos(time * 0.8 + clamped) * 2;
+        let scale = 0.74 + closeness * 0.33;
+        if (frame.classList.contains("is-active")) scale += 0.06;
+
+        frame.style.transform = `translate3d(0, ${waveOffset + driftOffset}px, ${zDepth}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
+        frame.style.opacity = `${0.16 + closeness * 0.88}`;
+        frame.style.filter = `blur(${(1 - closeness) * 1.8}px) saturate(${0.72 + closeness * 0.44})`;
+      });
+
+      const arcWave = Math.sin(time * 0.8 + (reel.direction > 0 ? 0 : 1.4)) * 8;
+      const baseTilt = reel.direction > 0 ? -2.4 : 2.4;
+      const roll = Math.sin(time * 0.5 + reel.direction) * 1.2;
+      reel.track.style.transform = `translate3d(0, ${arcWave}px, 0) rotateX(8deg) rotateZ(${baseTilt + roll}deg)`;
     }
 
     function animate(now) {
@@ -224,6 +243,7 @@
         }
         applyMotionBlur(reel, now);
         updateActiveFrame(reel);
+        styleReelDepth(reel, now);
       });
 
       requestAnimationFrame(animate);
