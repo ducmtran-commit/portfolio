@@ -229,7 +229,10 @@
 
       if (target < 0) target += reel.loopPoint;
       if (target > reel.loopPoint) target -= reel.loopPoint;
-      stage.scrollLeft = target;
+      stage.scrollTo({
+        left: target,
+        behavior: "smooth"
+      });
     }
 
     filmSection.addEventListener("pointerdown", (event) => {
