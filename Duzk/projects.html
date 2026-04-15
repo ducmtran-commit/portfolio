@@ -34,6 +34,50 @@
         <p class="prose projects-intro">
           A curated set of assignments exploring digital processes across glitch manipulation, vector illustration, and creative coding.
         </p>
+
+        <div class="film-lab" id="film-lab" aria-label="Film roll portfolio viewer">
+          <p class="section-label">Film archive</p>
+          <h3 class="film-lab__title">Light table</h3>
+          <p class="prose film-lab__intro">
+            Each project is a roll on the shelf. Load one into the viewer to scrub the strip—swap rolls without leaving the bench.
+          </p>
+
+          <div class="film-lab__root">
+            <div class="film-shelf-panel" id="film-shelf-panel">
+              <div class="film-shelf" id="film-shelf" aria-label="Film rolls on shelf"></div>
+            </div>
+
+            <div class="film-viewer-panel" id="film-viewer-panel" hidden>
+              <div class="film-viewer">
+                <div class="film-viewer__chrome">
+                  <button type="button" class="film-viewer__back" id="film-viewer-back" aria-label="Back to shelf">
+                    ← Shelf
+                  </button>
+                  <div class="film-viewer__meta">
+                    <p class="film-viewer__eyebrow" id="film-viewer-type"></p>
+                    <h3 class="film-viewer__project" id="film-viewer-title"></h3>
+                    <p class="film-viewer__stats" id="film-viewer-stats"></p>
+                  </div>
+                  <div class="film-viewer__swap">
+                    <label class="visually-hidden" for="film-roll-swap">Load a different roll</label>
+                    <select class="film-viewer__select" id="film-roll-swap"></select>
+                  </div>
+                </div>
+
+                <div class="film-viewer__bench">
+                  <div class="film-strip-wrap">
+                    <div class="film-strip" id="film-strip" tabindex="0" aria-label="Film frames, scroll horizontally"></div>
+                  </div>
+                  <div class="film-scrub">
+                    <span class="film-scrub__label" aria-hidden="true">Scrub</span>
+                    <input type="range" class="film-scrub__range" id="film-scrub-range" min="0" max="100" value="0" aria-valuetext="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <p class="section-label project-group-label">Glitch Art</p>
         <div class="projects-grid">
           <article class="project-card">
@@ -134,6 +178,250 @@
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
 
+    const FILM_ROLLS = [
+      {
+        id: "glitch",
+        name: "Glitch Art",
+        type: "Image code · Notepad++",
+        frames: [
+          { src: "assets/glitch-light-sunset.png", alt: "Glitch art — light, sunset", caption: "Light" },
+          { src: "assets/glitch-medium-band.png", alt: "Glitch art — medium, band portrait", caption: "Medium" },
+          { src: "assets/glitch-heavy-spider.png", alt: "Glitch art — heavy, spider", caption: "Heavy" },
+        ],
+      },
+      {
+        id: "vector",
+        name: "Vector Art",
+        type: "Illustration · Adobe Illustrator",
+        frames: [
+          { src: "assets/vector-yuumi-sticker.png", alt: "Vector Yuumi sticker design", caption: "Sticker" },
+          { src: "assets/vector-yuumi-mockup.png", alt: "Yuumi sticker mockup on laptop", caption: "Mockup" },
+        ],
+      },
+      {
+        id: "code",
+        name: "Creative Coding",
+        type: "p5.js · Interactive",
+        frames: [
+          { src: "assets/creative-coding-robot.png", alt: "p5.js robot in cyberpunk scene", caption: "Robot" },
+        ],
+      },
+    ];
+
+    const shelfEl = document.getElementById("film-shelf");
+    const shelfPanel = document.getElementById("film-shelf-panel");
+    const viewerPanel = document.getElementById("film-viewer-panel");
+    const viewerBack = document.getElementById("film-viewer-back");
+    const viewerType = document.getElementById("film-viewer-type");
+    const viewerTitle = document.getElementById("film-viewer-title");
+    const viewerStats = document.getElementById("film-viewer-stats");
+    const rollSwap = document.getElementById("film-roll-swap");
+    const stripEl = document.getElementById("film-strip");
+    const scrubEl = document.getElementById("film-scrub-range");
+
+    let activeRollId = null;
+    let scrubSyncLock = false;
+
+    function rollById(id) {
+      return FILM_ROLLS.find((r) => r.id === id);
+    }
+
+    function buildShelf() {
+      shelfEl.innerHTML = "";
+      FILM_ROLLS.forEach((roll) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "film-roll";
+        btn.dataset.rollId = roll.id;
+        btn.setAttribute("aria-label", `Load ${roll.name}, ${roll.frames.length} frames`);
+
+        const can = document.createElement("span");
+        can.className = "film-roll__canister";
+        can.setAttribute("aria-hidden", "true");
+
+        const prev = document.createElement("span");
+        prev.className = "film-roll__preview";
+        const img = document.createElement("img");
+        img.src = roll.frames[0].src;
+        img.alt = "";
+        img.decoding = "async";
+        prev.appendChild(img);
+
+        const meta = document.createElement("span");
+        meta.className = "film-roll__meta";
+        meta.innerHTML =
+          `<span class="film-roll__name">${roll.name}</span>` +
+          `<span class="film-roll__count">${roll.frames.length} frames</span>` +
+          `<span class="film-roll__type">${roll.type.split("·")[0].trim()}</span>`;
+
+        btn.appendChild(can);
+        btn.appendChild(prev);
+        btn.appendChild(meta);
+        btn.addEventListener("click", () => openViewer(roll.id));
+        shelfEl.appendChild(btn);
+      });
+    }
+
+    function buildSwapOptions(selectedId) {
+      rollSwap.innerHTML = "";
+      FILM_ROLLS.forEach((roll) => {
+        const opt = document.createElement("option");
+        opt.value = roll.id;
+        opt.textContent = `${roll.name} (${roll.frames.length})`;
+        if (roll.id === selectedId) opt.selected = true;
+        rollSwap.appendChild(opt);
+      });
+    }
+
+    function renderStrip(roll) {
+      stripEl.innerHTML = "";
+      roll.frames.forEach((frame, i) => {
+        const cell = document.createElement("div");
+        cell.className = "film-cell";
+        cell.dataset.index = String(i);
+
+        const hole = document.createElement("div");
+        hole.className = "film-cell__perfs";
+        hole.setAttribute("aria-hidden", "true");
+
+        const art = document.createElement("div");
+        art.className = "film-cell__art";
+        const im = document.createElement("img");
+        im.src = frame.src;
+        im.alt = frame.alt;
+        im.loading = "lazy";
+        im.decoding = "async";
+        im.setAttribute("data-lightbox", "");
+        art.appendChild(im);
+
+        const cap = document.createElement("p");
+        cap.className = "film-cell__caption";
+        cap.textContent = frame.caption;
+
+        cell.appendChild(hole);
+        cell.appendChild(art);
+        cell.appendChild(cap);
+        stripEl.appendChild(cell);
+      });
+    }
+
+    function updateMeta(roll) {
+      viewerType.textContent = roll.type;
+      viewerTitle.textContent = roll.name;
+      viewerStats.textContent = `${roll.frames.length} frame${roll.frames.length === 1 ? "" : "s"} on this roll`;
+    }
+
+    function syncScrubFromScroll() {
+      const max = stripEl.scrollWidth - stripEl.clientWidth;
+      scrubSyncLock = true;
+      if (max <= 0) {
+        scrubEl.value = "0";
+        scrubEl.disabled = true;
+        scrubEl.setAttribute("aria-valuetext", "Single frame");
+      } else {
+        scrubEl.disabled = false;
+        const pct = Math.round((stripEl.scrollLeft / max) * 100);
+        scrubEl.value = String(pct);
+        scrubEl.setAttribute("aria-valuetext", `${pct}% along the strip`);
+      }
+      scrubSyncLock = false;
+    }
+
+    function syncScrollFromScrub() {
+      const max = stripEl.scrollWidth - stripEl.clientWidth;
+      if (max <= 0) return;
+      const pct = Number(scrubEl.value) / 100;
+      stripEl.scrollLeft = pct * max;
+    }
+
+    function bindStripScroll() {
+      stripEl.addEventListener(
+        "scroll",
+        () => {
+          if (scrubSyncLock) return;
+          syncScrubFromScroll();
+        },
+        { passive: true }
+      );
+    }
+
+    function loadRollInViewer(rollId, { animate } = { animate: true }) {
+      const roll = rollById(rollId);
+      if (!roll) return;
+      activeRollId = rollId;
+      updateMeta(roll);
+      buildSwapOptions(rollId);
+      renderStrip(roll);
+
+      requestAnimationFrame(() => {
+        stripEl.scrollLeft = 0;
+        syncScrubFromScroll();
+      });
+
+      if (animate) {
+        viewerPanel.classList.remove("film-viewer-panel--swap");
+        void viewerPanel.offsetWidth;
+        viewerPanel.classList.add("film-viewer-panel--enter");
+      }
+    }
+
+    function openViewer(rollId) {
+      activeRollId = rollId;
+      shelfPanel.classList.add("film-shelf-panel--out");
+      viewerPanel.hidden = false;
+      viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
+      loadRollInViewer(rollId, { animate: true });
+      requestAnimationFrame(() => {
+        viewerPanel.classList.add("film-viewer-panel--visible");
+        requestAnimationFrame(() => {
+          syncScrubFromScroll();
+          rollSwap.focus({ preventScroll: true });
+        });
+      });
+    }
+
+    function closeViewer() {
+      viewerPanel.classList.remove("film-viewer-panel--visible", "film-viewer-panel--enter");
+      shelfPanel.classList.remove("film-shelf-panel--out");
+      viewerPanel.hidden = true;
+      activeRollId = null;
+    }
+
+    rollSwap.addEventListener("change", () => {
+      const next = rollSwap.value;
+      if (next === activeRollId) return;
+      viewerPanel.classList.add("film-viewer-panel--swap");
+      loadRollInViewer(next, { animate: false });
+      requestAnimationFrame(() => {
+        viewerPanel.classList.remove("film-viewer-panel--swap");
+      });
+    });
+
+    scrubEl.addEventListener("input", () => {
+      syncScrollFromScrub();
+      scrubEl.setAttribute("aria-valuetext", `${scrubEl.value}% along the strip`);
+    });
+
+    viewerBack.addEventListener("click", closeViewer);
+
+    buildShelf();
+    bindStripScroll();
+
+    stripEl.addEventListener("keydown", (event) => {
+      const step = Math.min(160, stripEl.clientWidth * 0.35);
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stripEl.scrollBy({ left: step, behavior: "smooth" });
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stripEl.scrollBy({ left: -step, behavior: "smooth" });
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (!viewerPanel.hidden) syncScrubFromScroll();
+    });
+
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
     const lightboxClose = document.getElementById("lightbox-close");
@@ -164,7 +452,10 @@
       closeLightbox();
     });
     window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !lightbox.hidden) closeLightbox();
+      if (event.key === "Escape") {
+        if (!lightbox.hidden) closeLightbox();
+        else if (!viewerPanel.hidden) closeViewer();
+      }
     });
   </script>
 </body>
