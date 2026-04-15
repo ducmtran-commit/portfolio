@@ -7,6 +7,13 @@
   --line: rgba(26, 35, 36, 0.65);
   --max: 72rem;
   --space: clamp(1.25rem, 4vw, 2.5rem);
+  /* Abstract page backdrop (warm studio + faint digital cool) */
+  --bg-veil: rgba(2, 4, 3, 0.42);
+  --bg-glow-warm: rgba(95, 46, 27, 0.26);
+  --bg-glow-warm-soft: rgba(95, 46, 27, 0.12);
+  --bg-glow-cool: rgba(56, 120, 140, 0.09);
+  --bg-glow-magenta: rgba(120, 60, 95, 0.05);
+  --bg-grid-fine: rgba(245, 241, 234, 0.017);
 }
 
 *,
@@ -17,15 +24,65 @@
 
 html {
   scroll-behavior: smooth;
+  min-height: 100%;
 }
 
 body {
   margin: 0;
+  min-height: 100%;
   font-family: "DM Sans", system-ui, sans-serif;
   font-size: 1.0625rem;
   line-height: 1.65;
   color: var(--ink);
-  background: var(--bg);
+  background-color: var(--bg);
+  isolation: isolate;
+}
+
+/* Abstract ambient background — matches dark palette, glitch/cyber hints, warm accent */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 130% 100% at 50% 50%, transparent 32%, var(--bg-veil) 100%),
+    repeating-linear-gradient(
+      118deg,
+      transparent,
+      transparent 11px,
+      var(--bg-grid-fine) 11px,
+      var(--bg-grid-fine) 12px
+    ),
+    radial-gradient(ellipse 85% 55% at 18% 8%, var(--bg-glow-warm), transparent 58%),
+    radial-gradient(ellipse 70% 45% at 92% 22%, var(--bg-glow-cool), transparent 52%),
+    radial-gradient(ellipse 55% 40% at 8% 92%, var(--bg-glow-warm-soft), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 88% 88%, var(--bg-glow-magenta), transparent 50%),
+    radial-gradient(ellipse 110% 80% at 50% 118%, rgba(20, 20, 19, 0.55), transparent 58%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: bg-ambient-shift 28s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes bg-ambient-shift {
+  0% {
+    opacity: 1;
+    filter: saturate(1) hue-rotate(0deg);
+  }
+  100% {
+    opacity: 0.92;
+    filter: saturate(1.06) hue-rotate(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 h1, h2, h3 {
