@@ -39,7 +39,7 @@
           <p class="section-label">Film archive</p>
           <h3 class="film-lab__title">Light table</h3>
           <p class="prose film-lab__intro">
-            Each project is a roll on the shelf. Load one into the viewer to scrub the strip—swap rolls without leaving the bench.
+            Each category is a 35mm-style roll on the bench. Open a canister to unspool the strip, scrub through frames, and swap rolls in place—like working on a light table.
           </p>
 
           <div class="film-lab__root">
@@ -65,8 +65,23 @@
                 </div>
 
                 <div class="film-viewer__bench">
-                  <div class="film-strip-wrap">
-                    <div class="film-strip" id="film-strip" tabindex="0" aria-label="Film frames, scroll horizontally"></div>
+                  <div class="film-unspool">
+                    <div class="film-unspool__track">
+                      <div class="film-strip-shell" id="film-strip-shell">
+                        <div class="film-strip-wrap">
+                          <div class="film-strip" id="film-strip" tabindex="0" aria-label="Film frames, scroll horizontally"></div>
+                        </div>
+                      </div>
+                      <div class="film-spool" aria-hidden="true">
+                        <span class="film-spool__rim film-spool__rim--top"></span>
+                        <span class="film-spool__knob"></span>
+                        <span class="film-spool__body">
+                          <span class="film-spool__label"></span>
+                          <span class="film-spool__slot"></span>
+                        </span>
+                        <span class="film-spool__rim film-spool__rim--bottom"></span>
+                      </div>
+                    </div>
                   </div>
                   <div class="film-scrub">
                     <span class="film-scrub__label" aria-hidden="true">Scrub</span>
@@ -217,6 +232,7 @@
     const viewerStats = document.getElementById("film-viewer-stats");
     const rollSwap = document.getElementById("film-roll-swap");
     const stripEl = document.getElementById("film-strip");
+    const stripShell = document.getElementById("film-strip-shell");
     const scrubEl = document.getElementById("film-scrub-range");
 
     let activeRollId = null;
@@ -235,28 +251,51 @@
         btn.dataset.rollId = roll.id;
         btn.setAttribute("aria-label", `Load ${roll.name}, ${roll.frames.length} frames`);
 
+        const mat = document.createElement("span");
+        mat.className = "film-roll__mat";
+        mat.setAttribute("aria-hidden", "true");
+
+        const canWrap = document.createElement("span");
+        canWrap.className = "film-roll__canister-wrap";
+
         const can = document.createElement("span");
         can.className = "film-roll__canister";
-        can.setAttribute("aria-hidden", "true");
 
-        const prev = document.createElement("span");
-        prev.className = "film-roll__preview";
-        const img = document.createElement("img");
-        img.src = roll.frames[0].src;
-        img.alt = "";
-        img.decoding = "async";
-        prev.appendChild(img);
+        const knob = document.createElement("span");
+        knob.className = "film-roll__knob";
+
+        const band = document.createElement("span");
+        band.className = "film-roll__label-band";
+
+        const rimT = document.createElement("span");
+        rimT.className = "film-roll__rim film-roll__rim--top";
+        const rimB = document.createElement("span");
+        rimB.className = "film-roll__rim film-roll__rim--bottom";
+
+        const exp = document.createElement("span");
+        exp.className = "film-roll__exp";
+        exp.textContent = `${roll.frames.length} exp.`;
+
+        can.append(rimT, knob, band, exp, rimB);
+
+        const leader = document.createElement("span");
+        leader.className = "film-roll__leader";
+        const thumb = document.createElement("img");
+        thumb.src = roll.frames[0].src;
+        thumb.alt = "";
+        thumb.decoding = "async";
+        leader.appendChild(thumb);
+
+        canWrap.append(can, leader);
 
         const meta = document.createElement("span");
         meta.className = "film-roll__meta";
         meta.innerHTML =
           `<span class="film-roll__name">${roll.name}</span>` +
-          `<span class="film-roll__count">${roll.frames.length} frames</span>` +
-          `<span class="film-roll__type">${roll.type.split("·")[0].trim()}</span>`;
+          `<span class="film-roll__count">${roll.frames.length} frames · ${roll.type.split("·")[0].trim()}</span>`;
 
-        btn.appendChild(can);
-        btn.appendChild(prev);
-        btn.appendChild(meta);
+        mat.appendChild(canWrap);
+        btn.append(mat, meta);
         btn.addEventListener("click", () => openViewer(roll.id));
         shelfEl.appendChild(btn);
       });
@@ -280,27 +319,39 @@
         cell.className = "film-cell";
         cell.dataset.index = String(i);
 
-        const hole = document.createElement("div");
-        hole.className = "film-cell__perfs";
-        hole.setAttribute("aria-hidden", "true");
+        const stock = document.createElement("div");
+        stock.className = "film-cell__stock";
 
-        const art = document.createElement("div");
-        art.className = "film-cell__art";
+        const perfTop = document.createElement("div");
+        perfTop.className = "film-cell__perfs film-cell__perfs--top";
+        perfTop.setAttribute("aria-hidden", "true");
+
+        const mid = document.createElement("div");
+        mid.className = "film-cell__mid";
+
+        const win = document.createElement("div");
+        win.className = "film-cell__window";
         const im = document.createElement("img");
         im.src = frame.src;
         im.alt = frame.alt;
         im.loading = "lazy";
         im.decoding = "async";
         im.setAttribute("data-lightbox", "");
-        art.appendChild(im);
+        win.appendChild(im);
+
+        mid.appendChild(win);
+
+        const perfBot = document.createElement("div");
+        perfBot.className = "film-cell__perfs film-cell__perfs--bottom";
+        perfBot.setAttribute("aria-hidden", "true");
+
+        stock.append(perfTop, mid, perfBot);
 
         const cap = document.createElement("p");
         cap.className = "film-cell__caption";
         cap.textContent = frame.caption;
 
-        cell.appendChild(hole);
-        cell.appendChild(art);
-        cell.appendChild(cap);
+        cell.append(stock, cap);
         stripEl.appendChild(cell);
       });
     }
@@ -345,7 +396,10 @@
       );
     }
 
-    function loadRollInViewer(rollId, { animate } = { animate: true }) {
+    const UNSPOOL_MS = 820;
+    const RETRACT_MS = 420;
+
+    function loadRollInViewer(rollId) {
       const roll = rollById(rollId);
       if (!roll) return;
       activeRollId = rollId;
@@ -357,12 +411,6 @@
         stripEl.scrollLeft = 0;
         syncScrubFromScroll();
       });
-
-      if (animate) {
-        viewerPanel.classList.remove("film-viewer-panel--swap");
-        void viewerPanel.offsetWidth;
-        viewerPanel.classList.add("film-viewer-panel--enter");
-      }
     }
 
     function openViewer(rollId) {
@@ -370,31 +418,49 @@
       shelfPanel.classList.add("film-shelf-panel--out");
       viewerPanel.hidden = false;
       viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
-      loadRollInViewer(rollId, { animate: true });
+      stripShell.classList.add("film-strip-shell--retracting");
+      loadRollInViewer(rollId);
       requestAnimationFrame(() => {
         viewerPanel.classList.add("film-viewer-panel--visible");
         requestAnimationFrame(() => {
-          syncScrubFromScroll();
-          rollSwap.focus({ preventScroll: true });
+          stripShell.classList.remove("film-strip-shell--retracting");
+          stripEl.classList.add("film-strip--reveal");
+          window.setTimeout(() => stripEl.classList.remove("film-strip--reveal"), UNSPOOL_MS + 120);
+          requestAnimationFrame(() => {
+            syncScrubFromScroll();
+            rollSwap.focus({ preventScroll: true });
+          });
         });
       });
     }
 
     function closeViewer() {
-      viewerPanel.classList.remove("film-viewer-panel--visible", "film-viewer-panel--enter");
-      shelfPanel.classList.remove("film-shelf-panel--out");
-      viewerPanel.hidden = true;
-      activeRollId = null;
+      stripShell.classList.add("film-strip-shell--retracting");
+      window.setTimeout(() => {
+        viewerPanel.classList.remove("film-viewer-panel--visible", "film-viewer-panel--enter");
+        shelfPanel.classList.remove("film-shelf-panel--out");
+        window.setTimeout(() => {
+          viewerPanel.hidden = true;
+          stripShell.classList.remove("film-strip-shell--retracting");
+          activeRollId = null;
+        }, 380);
+      }, 420);
     }
 
     rollSwap.addEventListener("change", () => {
       const next = rollSwap.value;
       if (next === activeRollId) return;
-      viewerPanel.classList.add("film-viewer-panel--swap");
-      loadRollInViewer(next, { animate: false });
-      requestAnimationFrame(() => {
-        viewerPanel.classList.remove("film-viewer-panel--swap");
-      });
+      stripShell.classList.add("film-strip-shell--retracting");
+      window.setTimeout(() => {
+        loadRollInViewer(next);
+        stripShell.classList.remove("film-strip-shell--retracting");
+        void stripShell.offsetWidth;
+        stripEl.classList.add("film-strip--reveal");
+        window.setTimeout(() => stripEl.classList.remove("film-strip--reveal"), UNSPOOL_MS + 120);
+        requestAnimationFrame(() => {
+          syncScrubFromScroll();
+        });
+      }, RETRACT_MS);
     });
 
     scrubEl.addEventListener("input", () => {
