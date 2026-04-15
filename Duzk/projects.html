@@ -32,7 +32,7 @@
         <p class="section-label">Selected projects</p>
         <h2 id="projects-heading">Selected digital projects</h2>
         <p class="prose projects-intro">
-          A curated set of assignments exploring digital processes across glitch manipulation, vector illustration, and creative coding.
+          Work is organized as film rolls—open any canister to browse frames. This page is the project overview; details live inside each roll.
         </p>
 
         <div class="film-lab" id="film-lab" aria-label="Film roll portfolio viewer">
@@ -44,7 +44,9 @@
 
           <div class="film-lab__root">
             <div class="film-shelf-panel" id="film-shelf-panel">
-              <div class="film-shelf" id="film-shelf" aria-label="Film rolls on shelf"></div>
+              <div class="film-shelf-scroller">
+                <div class="film-shelf film-shelf--row" id="film-shelf" aria-label="Film rolls on shelf"></div>
+              </div>
             </div>
 
             <div class="film-viewer-panel" id="film-viewer-panel" hidden>
@@ -91,88 +93,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <p class="section-label project-group-label">Glitch Art</p>
-        <div class="projects-grid">
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/glitch-light-sunset.png" alt="Light glitch sunset image" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Glitch Art — Light</h3>
-              <p>Code-based glitch experiment, 2026.</p>
-              <p class="project-brief">
-                The sunset image demonstrates a subtle, controlled glitch effect that keeps the original mood and composition while adding digital distortion.
-              </p>
-            </div>
-          </article>
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/glitch-medium-band.png" alt="Medium glitch music band image" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Glitch Art — Medium</h3>
-              <p>Code-based glitch experiment, 2026.</p>
-              <p class="project-brief">
-                The band portrait pushes the distortion further with stronger color shifts and segmented artifacts, while keeping faces and silhouettes readable.
-              </p>
-            </div>
-          </article>
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/glitch-heavy-spider.png" alt="Heavy glitch spider image" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Glitch Art — Heavy</h3>
-              <p>Code-based glitch experiment, 2026.</p>
-              <p class="project-brief">
-                The spider image applies the most aggressive glitch treatment, creating dramatic disruption while preserving the subject as the focal point.
-              </p>
-            </div>
-          </article>
-        </div>
-        <p class="section-label project-group-label">Vector Art</p>
-        <div class="projects-grid">
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/vector-yuumi-sticker.png" alt="Vector sticker design based on Yuumi from League of Legends" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Vector Art — Sticker Design</h3>
-              <p>Adobe Illustrator Pen Tool, 2026.</p>
-              <p class="project-brief">
-                This project was about creating a sticker using vector art. I used the Pen Tool in Adobe Illustrator to design it. The sticker is based on my Yuumi cat figure from the game League of Legends. For this project, I tried to capture as many details of the figure as possible while ignoring the base that the figure normally sits on.
-              </p>
-            </div>
-          </article>
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/vector-yuumi-mockup.png" alt="Yuumi sticker mockup placed on a laptop and table" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Vector Art — Mockup</h3>
-              <p>Sticker application preview, 2026.</p>
-              <p class="project-brief">
-                A presentation mockup showing how the final sticker design looks when applied to real surfaces.
-              </p>
-            </div>
-          </article>
-        </div>
-        <p class="section-label project-group-label">Creative Coding</p>
-        <div class="projects-grid">
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="assets/creative-coding-robot.png" alt="p5.js robot with cyberpunk city and portal background" data-lightbox />
-            </div>
-            <div class="project-body">
-              <h3>Creative Coding — Robot</h3>
-              <p>p5.js, 2026.</p>
-              <p class="project-brief">
-                This project was about creating a robot using code in p5.js. My work was inspired by cyberpunk and futuristic themes, featuring a robot that has control over people and uses advanced technology to create portals and manipulate objects.
-              </p>
-            </div>
-          </article>
         </div>
       </div>
     </section>
@@ -290,9 +210,18 @@
 
         const meta = document.createElement("span");
         meta.className = "film-roll__meta";
+        const typeParts = roll.type.split("·").map((s) => s.trim());
+        const kind = typeParts[0] || "";
+        const detail = typeParts.slice(1).join(" · ");
         meta.innerHTML =
           `<span class="film-roll__name">${roll.name}</span>` +
-          `<span class="film-roll__count">${roll.frames.length} frames · ${roll.type.split("·")[0].trim()}</span>`;
+          `<span class="film-roll__eyebrow">${kind}</span>` +
+          `<span class="film-roll__stats">` +
+          `<span class="film-roll__stat-strong">${roll.frames.length} frames</span>` +
+          (detail
+            ? `<span class="film-roll__stat-sep" aria-hidden="true">·</span><span class="film-roll__stat-detail">${detail}</span>`
+            : "") +
+          `</span>`;
 
         mat.appendChild(canWrap);
         btn.append(mat, meta);
