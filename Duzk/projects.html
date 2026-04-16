@@ -59,6 +59,16 @@
                     <p class="film-viewer__eyebrow" id="film-viewer-type"></p>
                     <h3 class="film-viewer__project" id="film-viewer-title"></h3>
                     <p class="film-viewer__stats" id="film-viewer-stats"></p>
+                    <p class="film-viewer__link-row">
+                      <a
+                        class="film-viewer__project-link"
+                        id="film-viewer-project-link"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        hidden
+                      ></a>
+                    </p>
                   </div>
                   <div class="film-viewer__swap">
                     <label class="visually-hidden" for="film-roll-swap">Load a different roll</label>
@@ -187,6 +197,11 @@
         id: "code",
         name: "Creative Coding",
         type: "p5.js · Interactive",
+        /* Swap href for your shared sketch, e.g. https://editor.p5js.org/username/full/… */
+        projectLink: {
+          href: "https://editor.p5js.org/",
+          label: "Open p5.js sketch",
+        },
         frames: [
           {
             src: "assets/creative-coding-robot.png",
@@ -210,6 +225,7 @@
     const stripEl = document.getElementById("film-strip");
     const stripShell = document.getElementById("film-strip-shell");
     const scrubEl = document.getElementById("film-scrub-range");
+    const viewerProjectLink = document.getElementById("film-viewer-project-link");
 
     let activeRollId = null;
     let scrubSyncLock = false;
@@ -224,6 +240,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "film-roll";
+        btn.id = `film-roll-${roll.id}`;
         btn.dataset.rollId = roll.id;
         btn.setAttribute("aria-label", `Load ${roll.name}, ${roll.frames.length} frames`);
 
@@ -347,6 +364,15 @@
       viewerType.textContent = roll.type;
       viewerTitle.textContent = roll.name;
       viewerStats.textContent = `${roll.frames.length} frame${roll.frames.length === 1 ? "" : "s"} on this roll`;
+      if (roll.projectLink && roll.projectLink.href) {
+        viewerProjectLink.href = roll.projectLink.href;
+        viewerProjectLink.textContent = roll.projectLink.label || "Open project link";
+        viewerProjectLink.hidden = false;
+      } else {
+        viewerProjectLink.href = "#";
+        viewerProjectLink.textContent = "";
+        viewerProjectLink.hidden = true;
+      }
     }
 
     function syncScrubFromScroll() {
@@ -459,6 +485,15 @@
 
     buildShelf();
     bindStripScroll();
+
+    function applyProjectsHash() {
+      const raw = location.hash.replace(/^#/, "");
+      if (raw === "film-roll-code" || raw === "creative-coding") {
+        openViewer("code");
+      }
+    }
+    applyProjectsHash();
+    window.addEventListener("hashchange", applyProjectsHash);
 
     stripEl.addEventListener("keydown", (event) => {
       const step = Math.min(160, stripEl.clientWidth * 0.35);
