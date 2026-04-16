@@ -719,13 +719,13 @@ section h2 {
 
 .about-layout {
   display: grid;
-  gap: 2rem;
+  gap: clamp(1.4rem, 3vw, 2.4rem);
   align-items: start;
 }
 
 @media (min-width: 52rem) {
   .about-layout {
-    grid-template-columns: 1fr 1.1fr;
+    grid-template-columns: minmax(16rem, 24rem) minmax(0, 1fr);
   }
 }
 
@@ -733,6 +733,8 @@ section h2 {
   aspect-ratio: 3 / 4;
   max-width: 20rem;
   width: 100%;
+  justify-self: start;
+  align-self: start;
   overflow: hidden;
   background: linear-gradient(160deg, #45433e, var(--accent));
   border-radius: 0.35rem;
