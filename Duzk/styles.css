@@ -789,6 +789,19 @@ section h2 {
   }
 }
 
+.about-copy-card {
+  padding: clamp(1.1rem, 2.8vw, 1.75rem);
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 163, 209, 0.4);
+  background:
+    linear-gradient(180deg, rgba(255, 117, 201, 0.1), rgba(94, 34, 70, 0.22)),
+    rgba(41, 20, 37, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(255, 120, 198, 0.18) inset,
+    0 0 34px rgba(255, 66, 182, 0.16);
+  backdrop-filter: blur(1.5px);
+}
+
 .contact-block {
   background: var(--surface);
   border: 1px solid var(--line);
