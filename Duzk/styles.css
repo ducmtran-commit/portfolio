@@ -936,93 +936,192 @@ footer.site .wrap {
 .film-roll__canister-wrap {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   gap: 0;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.38));
 }
 
+/* 3D-style35mm canister: knob → top cap → cylindrical body → bottom cap */
 .film-roll__canister {
-  position: relative;
-  width: clamp(4.25rem, 11vw, 5.35rem);
-  height: clamp(6.5rem, 17vw, 8.15rem);
-  border-radius: 0.48rem;
-  background: var(--film-can);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 -4px 8px rgba(0, 0, 0, 0.2),
-    4px 8px 22px rgba(0, 0, 0, 0.5);
+  --can-body-w: clamp(4.1rem, 10.5vw, 5.15rem);
+  --can-cap-w: calc(var(--can-body-w) + 0.55rem);
+  --can-body-h: clamp(5.85rem, 15vw, 7.35rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.film-roll__rim {
-  position: absolute;
-  left: 0.16rem;
-  right: 0.16rem;
-  height: clamp(0.42rem, 1.2vw, 0.52rem);
-  border-radius: 0.22rem;
-  background: linear-gradient(180deg, #2e2c28, #19171a);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.film-roll__rim--top {
-  top: 0;
-}
-
-.film-roll__rim--bottom {
-  bottom: 0;
+.film-roll__top-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
 }
 
 .film-roll__knob {
+  width: clamp(0.72rem, 1.85vw, 0.88rem);
+  height: clamp(0.5rem, 1.35vw, 0.62rem);
+  margin-bottom: -0.06rem;
+  border-radius: 0.14rem 0.14rem 0.1rem 0.1rem;
+  background: linear-gradient(90deg, #3a3836 0%, #5c5a56 40%, #2e2c28 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 2px 3px rgba(0, 0, 0, 0.45);
+}
+
+.film-roll__cap {
+  width: var(--can-cap-w);
+  height: clamp(0.38rem, 1vw, 0.48rem);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #4a4844 0%, #252322 55%, #141312 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.45);
+}
+
+.film-roll__cap--top {
+  margin-bottom: -0.04rem;
+}
+
+.film-roll__cap--bottom {
+  margin-top: -0.04rem;
+}
+
+.film-roll__body {
+  position: relative;
+  width: var(--can-body-w);
+  height: var(--can-body-h);
+  border-radius: 0.22rem;
+  background: linear-gradient(
+    90deg,
+    #8f8e8b 0%,
+    #c8c7c4 18%,
+    #f2f2f0 38%,
+    #ffffff 48%,
+    #d4d3d0 72%,
+    #9c9b98 100%
+  );
+  box-shadow:
+    inset 3px 0 5px rgba(255, 255, 255, 0.35),
+    inset -4px 0 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.film-roll__slit {
   position: absolute;
-  top: 0.38rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: clamp(0.78rem, 2vw, 0.92rem);
-  height: clamp(0.62rem, 1.6vw, 0.72rem);
-  border-radius: 0.18rem 0.18rem 0.12rem 0.12rem;
-  background: linear-gradient(180deg, #45433e, #252328);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.55);
-  z-index: 2;
+  top: 18%;
+  bottom: 18%;
+  right: 0.08rem;
+  width: 0.2rem;
+  border-radius: 0.06rem;
+  background: linear-gradient(180deg, #1a1816, #0d0c0b);
+  box-shadow: inset -1px 0 2px rgba(0, 0, 0, 0.6);
+  z-index: 3;
 }
 
 .film-roll__label-band {
   position: absolute;
-  left: 0.38rem;
-  right: 0.38rem;
+  left: 0.42rem;
+  right: 0.42rem;
   top: 50%;
-  height: clamp(2.65rem, 7vw, 3.25rem);
+  height: clamp(2.35rem, 6.2vw, 2.95rem);
   transform: translateY(-50%);
-  border-radius: 0.14rem;
+  border-radius: 0.12rem;
   background: linear-gradient(180deg, #f04b48 0%, var(--film-accent) 42%, #c42824 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
-  opacity: 0.94;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+  opacity: 0.97;
+  z-index: 1;
 }
 
 .film-roll__exp {
   position: absolute;
-  bottom: clamp(0.65rem, 1.8vw, 0.85rem);
+  bottom: clamp(0.52rem, 1.5vw, 0.68rem);
   left: 0;
   right: 0;
   text-align: center;
-  font-size: clamp(0.58rem, 1.4vw, 0.68rem);
+  font-size: clamp(0.52rem, 1.3vw, 0.62rem);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #ffffff;
-  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  z-index: 2;
 }
 
+/* Leader: chocolate stock, sprocket rows, notched end — emerges from slit */
 .film-roll__leader {
-  width: clamp(3.85rem, 10vw, 4.85rem);
-  height: clamp(2.85rem, 7.5vw, 3.55rem);
-  margin-bottom: 0.45rem;
-  margin-left: -0.2rem;
-  border-radius: 0.18rem 0 0 0.18rem;
+  --leader-h: clamp(2.65rem, 7vw, 3.35rem);
+  --leader-w: clamp(4rem, 10.5vw, 5.1rem);
+  --film-chocolate: #4a3428;
+  --film-chocolate-deep: #3d2b22;
+  width: var(--leader-w);
+  height: var(--leader-h);
+  margin-left: -0.28rem;
+  /* Slit is slightly below canister geometric center (knob + top cap) */
+  margin-top: 0.28rem;
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 22%),
+    86% 100%,
+    0 100%
+  );
+}
+
+.film-roll__leader-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.12rem 0 0 0.12rem;
   overflow: hidden;
-  border: 1px solid rgba(25, 23, 26, 0.65);
-  border-right: none;
-  box-shadow: -3px 5px 14px rgba(0, 0, 0, 0.4);
-  transform: skewY(-1.5deg);
-  background: var(--film-stock);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  background: var(--film-chocolate);
+}
+
+.film-roll__leader-perfs {
+  flex-shrink: 0;
+  height: 0.32rem;
+  background-color: var(--film-chocolate-deep);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 5px,
+    rgba(255, 255, 255, 0.88) 5px,
+    rgba(255, 255, 255, 0.88) 8px,
+    transparent 8px,
+    transparent 13px
+  );
+  background-size: 13px 100%;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.film-roll__leader-perfs--bottom {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 5px,
+    rgba(255, 255, 255, 0.88) 5px,
+    rgba(255, 255, 255, 0.88) 8px,
+    transparent 8px,
+    transparent 13px
+  );
+}
+
+.film-roll__leader-frame {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #2a1f19;
 }
 
 .film-roll__leader img {
@@ -1030,7 +1129,7 @@ footer.site .wrap {
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0.94;
+  opacity: 0.97;
 }
 
 .film-roll__meta {
