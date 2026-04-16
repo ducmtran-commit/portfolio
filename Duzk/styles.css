@@ -627,7 +627,7 @@ section h2 {
 }
 
 .lightbox-inner {
-  width: auto;
+  width: min(95vw, 52rem);
   height: auto;
   min-width: 0;
   min-height: 0;
@@ -651,7 +651,7 @@ section h2 {
 }
 
 .lightbox img {
-  width: min(92vw, 52rem);
+  width: 100%;
   height: auto;
   max-width: 100%;
   max-height: min(72vh, 820px);
@@ -665,7 +665,7 @@ section h2 {
 
 #lightbox-video {
   display: block;
-  width: min(92vw, 52rem);
+  width: 100%;
   aspect-ratio: 16 / 9;
   max-height: min(72vh, 820px);
   margin: 0 auto;
