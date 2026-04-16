@@ -125,6 +125,9 @@
         <div class="lightbox-meta" id="lightbox-meta" hidden>
           <p class="lightbox-meta__label" id="lightbox-meta-label"></p>
           <p class="lightbox-meta__body" id="lightbox-meta-body"></p>
+          <p class="lightbox-meta__body" id="lightbox-meta-link-wrap" hidden>
+            <a id="lightbox-meta-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+          </p>
         </div>
       </div>
     </div>
@@ -204,9 +207,11 @@
           {
             src: "assets/illustration-abstract.png",
             alt: "Abstract digital illustration with geometric energy",
-            caption: "Abstract composition",
+            caption: "Drawing Synesthesia - MEGALOVANIA",
             description:
-              "A bold abstract piece using geometric forms, energetic line work, and high-contrast color blocking.",
+              "This drawing is a project from my ART 15 class. It's about hearing music and turning it into an abstract drawing.",
+            linkHref: "https://youtu.be/KK3KXAECte4?si=N4GUxL8t8qXmfnvr",
+            linkLabel: "Music link: MEGALOVANIA",
           },
           {
             src: "assets/illustration-anime-portrait.png",
@@ -426,6 +431,8 @@
         im.setAttribute("data-caption", frame.caption);
         if (frame.description) im.setAttribute("data-description", frame.description);
         if (frame.videoEmbed) im.setAttribute("data-video-embed", frame.videoEmbed);
+        if (frame.linkHref) im.setAttribute("data-link-href", frame.linkHref);
+        if (frame.linkLabel) im.setAttribute("data-link-label", frame.linkLabel);
         win.appendChild(im);
 
         mid.appendChild(win);
@@ -604,6 +611,8 @@
     const lightboxMeta = document.getElementById("lightbox-meta");
     const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
+    const lightboxMetaLinkWrap = document.getElementById("lightbox-meta-link-wrap");
+    const lightboxMetaLink = document.getElementById("lightbox-meta-link");
 
     function openLightbox(image) {
       const videoEmbed = image.getAttribute("data-video-embed");
@@ -621,15 +630,29 @@
       }
       const cap = image.getAttribute("data-caption");
       const desc = image.getAttribute("data-description");
-      if (cap || desc) {
+      const linkHref = image.getAttribute("data-link-href");
+      const linkLabel = image.getAttribute("data-link-label");
+      if (cap || desc || linkHref) {
         lightboxMetaLabel.textContent = cap || "";
         lightboxMetaBody.textContent = desc || "";
         lightboxMetaLabel.hidden = !cap;
         lightboxMetaBody.hidden = !desc;
+        if (linkHref) {
+          lightboxMetaLink.href = linkHref;
+          lightboxMetaLink.textContent = linkLabel || linkHref;
+          lightboxMetaLinkWrap.hidden = false;
+        } else {
+          lightboxMetaLink.href = "#";
+          lightboxMetaLink.textContent = "";
+          lightboxMetaLinkWrap.hidden = true;
+        }
         lightboxMeta.hidden = false;
       } else {
         lightboxMetaLabel.textContent = "";
         lightboxMetaBody.textContent = "";
+        lightboxMetaLink.href = "#";
+        lightboxMetaLink.textContent = "";
+        lightboxMetaLinkWrap.hidden = true;
         lightboxMeta.hidden = true;
       }
       lightbox.hidden = false;
@@ -645,6 +668,9 @@
       lightboxMeta.hidden = true;
       lightboxMetaLabel.textContent = "";
       lightboxMetaBody.textContent = "";
+      lightboxMetaLink.href = "#";
+      lightboxMetaLink.textContent = "";
+      lightboxMetaLinkWrap.hidden = true;
       document.body.style.overflow = "";
     }
 
