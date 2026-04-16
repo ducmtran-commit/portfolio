@@ -42,42 +42,78 @@
         <div class="film-track" aria-label="Film strip moving right to left">
           <article class="film-frame is-active">
             <div class="film-art">
-              <img src="assets/glitch-light-sunset.png" alt="Glitch art — light level, sunset scene" data-lightbox />
+              <img
+                src="assets/glitch-light-sunset.png"
+                alt="Glitch art — light level, sunset scene"
+                data-lightbox
+                data-caption="Light"
+                data-description="A subtle, controlled glitch on a coastal sunset—enough digital distortion to feel electric while keeping the original mood and composition readable."
+              />
             </div>
             <h3>Glitch Art — Light</h3>
             <p>Subtle code-based distortion over a coastal sunset.</p>
           </article>
           <article class="film-frame">
             <div class="film-art">
-              <img src="assets/glitch-medium-band.png" alt="Glitch art — medium level, band portrait" data-lightbox />
+              <img
+                src="assets/glitch-medium-band.png"
+                alt="Glitch art — medium level, band portrait"
+                data-lightbox
+                data-caption="Medium"
+                data-description="Stronger color shifts and horizontal slice artifacts across a band portrait, with faces and silhouettes still clearly recognizable."
+              />
             </div>
             <h3>Glitch Art — Medium</h3>
             <p>Stronger slice and color shifts while keeping subjects readable.</p>
           </article>
           <article class="film-frame">
             <div class="film-art">
-              <img src="assets/glitch-heavy-spider.png" alt="Glitch art — heavy level, spider on web" data-lightbox />
+              <img
+                src="assets/glitch-heavy-spider.png"
+                alt="Glitch art — heavy level, spider on web"
+                data-lightbox
+                data-caption="Heavy"
+                data-description="The heaviest treatment in the series: aggressive displacement and noise while the spider, web, and red marking stay identifiable as the focal point."
+              />
             </div>
             <h3>Glitch Art — Heavy</h3>
             <p>Maximum glitch energy with the subject still recognizable.</p>
           </article>
           <article class="film-frame">
             <div class="film-art">
-              <img src="assets/vector-yuumi-sticker.png" alt="Vector sticker of Yuumi from League of Legends" data-lightbox />
+              <img
+                src="assets/vector-yuumi-sticker.png"
+                alt="Vector sticker of Yuumi from League of Legends"
+                data-lightbox
+                data-caption="Sticker"
+                data-description="A die-cut style sticker drawn with the Pen Tool in Illustrator, based on a Yuumi figure from League of Legends—detailed character work without the plastic display base."
+              />
             </div>
             <h3>Vector Art — Sticker</h3>
             <p>Pen Tool illustration translated into a die-cut sticker design.</p>
           </article>
           <article class="film-frame">
             <div class="film-art">
-              <img src="assets/vector-yuumi-mockup.png" alt="Yuumi sticker applied on a laptop" data-lightbox />
+              <img
+                src="assets/vector-yuumi-mockup.png"
+                alt="Yuumi sticker applied on a laptop"
+                data-lightbox
+                data-caption="Mockup"
+                data-description="Real-world preview: how the finished vector sticker reads on a laptop and on a table, for presentation and scale."
+              />
             </div>
             <h3>Vector Art — Mockup</h3>
             <p>Real-world preview of the finished sticker.</p>
           </article>
           <article class="film-frame">
             <div class="film-art">
-              <img src="assets/creative-coding-robot.png" alt="p5.js robot in a cyberpunk city with a portal" data-lightbox />
+              <img
+                src="assets/creative-coding-robot.png"
+                alt="p5.js robot in a cyberpunk city with a portal"
+                data-lightbox
+                data-caption="Robot"
+                data-description="Built in p5.js with a cyberpunk street scene as the plate: a geometric robot and floating shapes suggesting portals and tech-driven control, in line with the assignment brief."
+              />
             </div>
             <h3>Creative Coding — Robot</h3>
             <p>Geometric robot built in p5.js over a futuristic street scene.</p>
@@ -96,7 +132,13 @@
   <div class="lightbox" id="image-lightbox" hidden>
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
-      <img id="lightbox-image" alt="" />
+      <div class="lightbox-content">
+        <img id="lightbox-image" alt="" />
+        <div class="lightbox-meta" id="lightbox-meta" hidden>
+          <p class="lightbox-meta__label" id="lightbox-meta-label"></p>
+          <p class="lightbox-meta__body" id="lightbox-meta-body"></p>
+        </div>
+      </div>
     </div>
   </div>
   <script>
@@ -226,10 +268,26 @@
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
     const lightboxClose = document.getElementById("lightbox-close");
+    const lightboxMeta = document.getElementById("lightbox-meta");
+    const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
+    const lightboxMetaBody = document.getElementById("lightbox-meta-body");
 
     function openLightbox(image) {
       lightboxImage.src = image.src;
       lightboxImage.alt = image.alt || "Portfolio artwork";
+      const cap = image.getAttribute("data-caption");
+      const desc = image.getAttribute("data-description");
+      if (cap || desc) {
+        lightboxMetaLabel.textContent = cap || "";
+        lightboxMetaBody.textContent = desc || "";
+        lightboxMetaLabel.hidden = !cap;
+        lightboxMetaBody.hidden = !desc;
+        lightboxMeta.hidden = false;
+      } else {
+        lightboxMetaLabel.textContent = "";
+        lightboxMetaBody.textContent = "";
+        lightboxMeta.hidden = true;
+      }
       lightbox.hidden = false;
       document.body.style.overflow = "hidden";
     }
@@ -237,12 +295,15 @@
     function closeLightbox() {
       lightbox.hidden = true;
       lightboxImage.removeAttribute("src");
+      lightboxMeta.hidden = true;
+      lightboxMetaLabel.textContent = "";
+      lightboxMetaBody.textContent = "";
       document.body.style.overflow = "";
     }
 
     lightboxClose.addEventListener("click", closeLightbox);
     lightbox.addEventListener("pointerdown", (event) => {
-      if (event.target.closest("#lightbox-image")) return;
+      if (event.target.closest(".lightbox-content")) return;
       closeLightbox();
     });
     window.addEventListener("keydown", (event) => {
