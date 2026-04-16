@@ -269,7 +269,7 @@ section h2 {
 .gallery-page-title {
   font-family: "DM Sans", system-ui, sans-serif;
   font-weight: 700;
-  font-size: clamp(2.2rem, 4.8vw, 3.15rem);
+  font-size: clamp(2.7rem, 6.2vw, 4rem);
   letter-spacing: -0.03em;
   line-height: 1.15;
   margin: 0 0 0.65rem;
@@ -279,7 +279,7 @@ section h2 {
 
 .gallery-page-lead {
   margin: 0;
-  font-size: clamp(1.12rem, 1.35vw, 1.25rem);
+  font-size: clamp(1.25rem, 2.1vw, 1.65rem);
   font-weight: 400;
   color: var(--ink);
   max-width: 38ch;
@@ -883,12 +883,25 @@ footer.site .wrap {
 
 .film-lab__title {
   font-family: Fraunces, Georgia, serif;
-  font-size: clamp(1.6rem, 3.1vw, 2.05rem);
+  font-size: clamp(1.95rem, 3.9vw, 2.45rem);
   font-weight: 600;
   margin: 0 0 0.5rem;
   letter-spacing: -0.02em;
   color: #ffc6e9;
   text-shadow: 0 0 24px rgba(233, 50, 46, 0.28);
+}
+
+/* Stronger specificity to ensure project page headings visibly resize */
+.page-projects .gallery-page-title {
+  font-size: clamp(2.9rem, 6.5vw, 4.2rem);
+}
+
+.page-projects .gallery-page-lead {
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+}
+
+.page-projects .film-lab__title {
+  font-size: clamp(2rem, 4vw, 2.5rem);
 }
 
 .film-lab__intro {
