@@ -71,6 +71,18 @@
                         hidden
                       ></a>
                     </p>
+                    <div class="film-viewer__video-wrap" id="film-viewer-video-wrap" hidden>
+                      <iframe
+                        class="film-viewer__video"
+                        id="film-viewer-video"
+                        src=""
+                        title="Project video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                      ></iframe>
+                    </div>
                   </div>
                   <div class="film-viewer__swap">
                     <label class="visually-hidden" for="film-roll-swap">Load a different roll</label>
@@ -214,6 +226,25 @@
           },
         ],
       },
+      {
+        id: "animation",
+        name: "Animation Project",
+        type: "Motion design · Adobe After Effects",
+        projectLink: {
+          href: "https://youtu.be/b0KFw7Yk31E",
+          label: "Watch on YouTube",
+        },
+        videoEmbed: "https://www.youtube.com/embed/b0KFw7Yk31E?si=aBYGqa92Aq2Vrs9B",
+        frames: [
+          {
+            src: "https://img.youtube.com/vi/b0KFw7Yk31E/hqdefault.jpg",
+            alt: "Animation Project video thumbnail",
+            caption: "Duck Hunt FPS Concept",
+            description:
+              "This project was about creating a game simulation using Adobe After Effects. My work was inspired by a childhood game called Duck Hunt, combined with the modern first-person shooter style seen in games like Battlefield and Call of Duty.",
+          },
+        ],
+      },
     ];
 
     const shelfEl = document.getElementById("film-shelf");
@@ -228,6 +259,8 @@
     const stripShell = document.getElementById("film-strip-shell");
     const scrubEl = document.getElementById("film-scrub-range");
     const viewerProjectLink = document.getElementById("film-viewer-project-link");
+    const viewerVideoWrap = document.getElementById("film-viewer-video-wrap");
+    const viewerVideo = document.getElementById("film-viewer-video");
 
     let activeRollId = null;
     let scrubSyncLock = false;
@@ -409,6 +442,14 @@
         viewerProjectLink.textContent = "";
         viewerProjectLink.hidden = true;
       }
+
+      if (roll.videoEmbed) {
+        viewerVideo.src = roll.videoEmbed;
+        viewerVideoWrap.hidden = false;
+      } else {
+        viewerVideo.src = "";
+        viewerVideoWrap.hidden = true;
+      }
     }
 
     function syncScrubFromScroll() {
@@ -491,6 +532,8 @@
         window.setTimeout(() => {
           viewerPanel.hidden = true;
           stripShell.classList.remove("film-strip-shell--retracting");
+          viewerVideo.src = "";
+          viewerVideoWrap.hidden = true;
           activeRollId = null;
         }, 380);
       }, 420);
