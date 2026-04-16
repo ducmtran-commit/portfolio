@@ -576,27 +576,59 @@ section h2 {
   height: auto;
   min-width: 0;
   min-height: 0;
-  max-width: 95vw;
+  max-width: min(95vw, 52rem);
   max-height: 95vh;
   position: relative;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
   overflow: hidden;
-  background: #000;
+  background: #0a0b0b;
   box-shadow: 0 14px 48px rgba(0, 0, 0, 0.6);
   pointer-events: none;
+}
+
+.lightbox-content {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh;
 }
 
 .lightbox img {
   width: auto;
   height: auto;
-  min-width: 76vw;
-  min-height: 76vh;
-  max-width: 86vw;
-  max-height: 86vh;
+  max-width: 100%;
+  max-height: min(72vh, 820px);
+  min-width: 0;
+  min-height: 0;
   object-fit: contain;
   display: block;
-  pointer-events: auto;
+  margin: 0 auto;
+  background: #000;
+}
+
+.lightbox-meta {
+  border-top: 1px solid var(--line);
+  padding: 1rem 1.2rem 1.15rem;
+  background: rgba(20, 20, 19, 0.97);
+  max-height: min(28vh, 16rem);
+  overflow-y: auto;
+}
+
+.lightbox-meta__label {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(232, 196, 64, 0.92);
+}
+
+.lightbox-meta__body {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.62;
+  color: rgba(230, 222, 210, 0.92);
 }
 
 .lightbox-close {
