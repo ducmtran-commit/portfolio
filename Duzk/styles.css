@@ -762,6 +762,33 @@ section h2 {
   margin-top: 2rem;
 }
 
+/* Home About section: force clean side-by-side alignment */
+#portfolio-sections .about-layout {
+  grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+  column-gap: clamp(1.75rem, 3.5vw, 3rem);
+  align-items: start;
+}
+
+#portfolio-sections .about-photo {
+  max-width: none;
+  width: 100%;
+  margin-top: 0;
+}
+
+#portfolio-sections .prose {
+  max-width: none;
+}
+
+#portfolio-sections .about-section-title {
+  margin-top: 0;
+}
+
+@media (max-width: 51.99rem) {
+  #portfolio-sections .about-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 .contact-block {
   background: var(--surface);
   border: 1px solid var(--line);
