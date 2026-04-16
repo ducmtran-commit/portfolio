@@ -763,7 +763,7 @@ footer.site .wrap {
 
 .film-lab__root {
   position: relative;
-  min-height: min(34rem, 88vh);
+  min-height: min(28rem, 55vh);
 }
 
 .film-shelf-panel {
@@ -777,43 +777,18 @@ footer.site .wrap {
   position: absolute;
   inset: 0;
   z-index: 0;
-  height: min(34rem, 88vh);
+  min-height: min(40rem, 88vh);
   opacity: 0;
   transform: scale(0.94) translateY(1rem);
   pointer-events: none;
   filter: blur(6px);
 }
 
-/* Horizontal shelf: one row; scroll on narrow viewports */
+/* Shelf scroller: one film roll per row (stacked) */
 .film-shelf-scroller {
-  overflow-x: auto;
-  overflow-y: visible;
-  margin: 0 calc(var(--space) * -0.5);
-  padding: 0.35rem calc(var(--space) * 0.5) 0.85rem;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--space);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(232, 196, 64, 0.35) rgba(0, 0, 0, 0.2);
-  -webkit-overflow-scrolling: touch;
-}
-
-.film-shelf-scroller::-webkit-scrollbar {
-  height: 8px;
-}
-
-.film-shelf-scroller::-webkit-scrollbar-thumb {
-  background: rgba(232, 196, 64, 0.35);
-  border-radius: 999px;
-}
-
-@media (min-width: 72rem) {
-  .film-shelf-scroller {
-    overflow-x: visible;
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-    scroll-snap-type: none;
-  }
+  overflow: visible;
+  margin: 0;
+  padding: 0.25rem 0 0.5rem;
 }
 
 .film-shelf {
@@ -825,30 +800,22 @@ footer.site .wrap {
 
 .film-shelf--row {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
-  gap: clamp(1.25rem, 3.5vw, 2.75rem);
-  min-width: min-content;
+  gap: clamp(1.35rem, 3vw, 2rem);
+  width: 100%;
   padding: 0.15rem 0;
 }
 
-@media (min-width: 72rem) {
-  .film-shelf--row {
-    justify-content: center;
-  }
-}
-
-/* Shelf roll — larger canister + leader, single-row layout */
+/* Shelf roll — one roll per row, full width of bench */
 .film-roll {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 1rem;
-  flex: 0 0 auto;
-  width: clamp(13.5rem, 42vw, 19.5rem);
-  scroll-snap-align: center;
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
   padding: 0;
   border: none;
   border-radius: 0;
@@ -866,6 +833,7 @@ footer.site .wrap {
   align-items: center;
   justify-content: flex-end;
   width: 100%;
+  box-sizing: border-box;
   padding: clamp(1.35rem, 3vw, 1.85rem) clamp(1rem, 2.5vw, 1.35rem) clamp(1.15rem, 2.5vw, 1.45rem);
   border-radius: 0.65rem;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 38%),
@@ -1017,6 +985,7 @@ footer.site .wrap {
   gap: 0.35rem;
   width: 100%;
   padding: 0 0.35rem;
+  text-align: center;
 }
 
 .film-roll__name {
