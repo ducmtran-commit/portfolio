@@ -802,6 +802,11 @@ section h2 {
   backdrop-filter: blur(1.5px);
 }
 
+.copy-highlight {
+  color: #ffd7ef;
+  font-weight: 600;
+}
+
 .contact-block {
   background: var(--surface);
   border: 1px solid var(--line);
