@@ -18,7 +18,7 @@
         <ul>
           <li><a href="index.html" aria-current="page">Home</a></li>
           <li><a href="projects.html">Projects</a></li>
-          <li><a href="#portfolio-sections">About</a></li>
+          <li><a href="#portfolio-sections" id="nav-about-link">About</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
@@ -308,6 +308,14 @@
     const lightboxMeta = document.getElementById("lightbox-meta");
     const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
+    const aboutNavLink = document.getElementById("nav-about-link");
+    const aboutSection = document.getElementById("portfolio-sections");
+
+    aboutNavLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", "#portfolio-sections");
+    });
 
     function openLightbox(image) {
       lightboxImage.src = image.src;
