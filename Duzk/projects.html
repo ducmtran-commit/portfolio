@@ -107,7 +107,13 @@
   <div class="lightbox" id="image-lightbox" hidden>
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
-      <img id="lightbox-image" alt="" />
+      <div class="lightbox-content">
+        <img id="lightbox-image" alt="" />
+        <div class="lightbox-meta" id="lightbox-meta" hidden>
+          <p class="lightbox-meta__label" id="lightbox-meta-label"></p>
+          <p class="lightbox-meta__body" id="lightbox-meta-body"></p>
+        </div>
+      </div>
     </div>
   </div>
   <script>
@@ -119,9 +125,27 @@
         name: "Glitch Art",
         type: "Image code · Notepad++",
         frames: [
-          { src: "assets/glitch-light-sunset.png", alt: "Glitch art — light, sunset", caption: "Light" },
-          { src: "assets/glitch-medium-band.png", alt: "Glitch art — medium, band portrait", caption: "Medium" },
-          { src: "assets/glitch-heavy-spider.png", alt: "Glitch art — heavy, spider", caption: "Heavy" },
+          {
+            src: "assets/glitch-light-sunset.png",
+            alt: "Glitch art — light, sunset",
+            caption: "Light",
+            description:
+              "A subtle, controlled glitch on a coastal sunset—enough digital distortion to feel electric while keeping the original mood and composition readable.",
+          },
+          {
+            src: "assets/glitch-medium-band.png",
+            alt: "Glitch art — medium, band portrait",
+            caption: "Medium",
+            description:
+              "Stronger color shifts and horizontal slice artifacts across a band portrait, with faces and silhouettes still clearly recognizable.",
+          },
+          {
+            src: "assets/glitch-heavy-spider.png",
+            alt: "Glitch art — heavy, spider",
+            caption: "Heavy",
+            description:
+              "The heaviest treatment in the series: aggressive displacement and noise while the spider, web, and red marking stay identifiable as the focal point.",
+          },
         ],
       },
       {
@@ -129,8 +153,20 @@
         name: "Vector Art",
         type: "Illustration · Adobe Illustrator",
         frames: [
-          { src: "assets/vector-yuumi-sticker.png", alt: "Vector Yuumi sticker design", caption: "Sticker" },
-          { src: "assets/vector-yuumi-mockup.png", alt: "Yuumi sticker mockup on laptop", caption: "Mockup" },
+          {
+            src: "assets/vector-yuumi-sticker.png",
+            alt: "Vector Yuumi sticker design",
+            caption: "Sticker",
+            description:
+              "A die-cut style sticker drawn with the Pen Tool in Illustrator, based on a Yuumi figure from League of Legends—detailed character work without the plastic display base.",
+          },
+          {
+            src: "assets/vector-yuumi-mockup.png",
+            alt: "Yuumi sticker mockup on laptop",
+            caption: "Mockup",
+            description:
+              "Real-world preview: how the finished vector sticker reads on a laptop and on a table, for presentation and scale.",
+          },
         ],
       },
       {
@@ -138,7 +174,13 @@
         name: "Creative Coding",
         type: "p5.js · Interactive",
         frames: [
-          { src: "assets/creative-coding-robot.png", alt: "p5.js robot in cyberpunk scene", caption: "Robot" },
+          {
+            src: "assets/creative-coding-robot.png",
+            alt: "p5.js robot in cyberpunk scene",
+            caption: "Robot",
+            description:
+              "Built in p5.js with a cyberpunk street scene as the plate: a geometric robot and floating shapes suggesting portals and tech-driven control, in line with the assignment brief.",
+          },
         ],
       },
     ];
@@ -266,6 +308,8 @@
         im.loading = "lazy";
         im.decoding = "async";
         im.setAttribute("data-lightbox", "");
+        im.setAttribute("data-caption", frame.caption);
+        if (frame.description) im.setAttribute("data-description", frame.description);
         win.appendChild(im);
 
         mid.appendChild(win);
@@ -420,10 +464,26 @@
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
     const lightboxClose = document.getElementById("lightbox-close");
+    const lightboxMeta = document.getElementById("lightbox-meta");
+    const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
+    const lightboxMetaBody = document.getElementById("lightbox-meta-body");
 
     function openLightbox(image) {
       lightboxImage.src = image.src;
       lightboxImage.alt = image.alt || "Portfolio artwork";
+      const cap = image.getAttribute("data-caption");
+      const desc = image.getAttribute("data-description");
+      if (cap || desc) {
+        lightboxMetaLabel.textContent = cap || "";
+        lightboxMetaBody.textContent = desc || "";
+        lightboxMetaLabel.hidden = !cap;
+        lightboxMetaBody.hidden = !desc;
+        lightboxMeta.hidden = false;
+      } else {
+        lightboxMetaLabel.textContent = "";
+        lightboxMetaBody.textContent = "";
+        lightboxMeta.hidden = true;
+      }
       lightbox.hidden = false;
       document.body.style.overflow = "hidden";
     }
@@ -431,6 +491,9 @@
     function closeLightbox() {
       lightbox.hidden = true;
       lightboxImage.removeAttribute("src");
+      lightboxMeta.hidden = true;
+      lightboxMetaLabel.textContent = "";
+      lightboxMetaBody.textContent = "";
       document.body.style.overflow = "";
     }
 
@@ -443,7 +506,7 @@
 
     lightboxClose.addEventListener("click", closeLightbox);
     lightbox.addEventListener("pointerdown", (event) => {
-      if (event.target.closest("#lightbox-image")) return;
+      if (event.target.closest(".lightbox-content")) return;
       closeLightbox();
     });
     window.addEventListener("keydown", (event) => {
