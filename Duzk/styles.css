@@ -942,7 +942,7 @@ footer.site .wrap {
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.38));
 }
 
-/* 3D-style35mm canister: knob → top cap → cylindrical body → bottom cap */
+/* 3D-style 35mm canister: knob → top cap → cylindrical body → bottom cap */
 .film-roll__canister {
   --can-body-w: clamp(4.1rem, 10.5vw, 5.15rem);
   --can-cap-w: calc(var(--can-body-w) + 0.55rem);
@@ -1009,6 +1009,20 @@ footer.site .wrap {
     inset 0 -3px 6px rgba(0, 0, 0, 0.08);
 }
 
+.film-roll__body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 42% 88% at 32% 50%,
+    rgba(255, 255, 255, 0.5),
+    transparent 58%
+  );
+  mix-blend-mode: soft-light;
+}
+
 .film-roll__slit {
   position: absolute;
   top: 18%;
@@ -1060,9 +1074,10 @@ footer.site .wrap {
   --film-chocolate-deep: #3d2b22;
   width: var(--leader-w);
   height: var(--leader-h);
-  margin-left: -0.28rem;
+  margin-left: -0.38rem;
   /* Slit is slightly below canister geometric center (knob + top cap) */
-  margin-top: 0.28rem;
+  margin-top: 0.26rem;
+  z-index: 1;
   flex-shrink: 0;
   align-self: center;
   padding: 0;
@@ -1103,18 +1118,6 @@ footer.site .wrap {
   );
   background-size: 13px 100%;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.film-roll__leader-perfs--bottom {
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 5px,
-    rgba(255, 255, 255, 0.88) 5px,
-    rgba(255, 255, 255, 0.88) 8px,
-    transparent 8px,
-    transparent 13px
-  );
 }
 
 .film-roll__leader-frame {
