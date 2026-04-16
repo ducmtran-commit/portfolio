@@ -662,6 +662,15 @@ section h2 {
   background: #19171a;
 }
 
+#lightbox-video {
+  display: block;
+  width: min(92vw, 52rem);
+  aspect-ratio: 16 / 9;
+  max-height: min(72vh, 820px);
+  margin: 0 auto;
+  background: #19171a;
+}
+
 .lightbox-meta {
   border-top: 1px solid var(--line);
   padding: 1rem 1.2rem 1.15rem;
@@ -1440,22 +1449,6 @@ footer.site .wrap {
 
 .film-viewer__project-link:hover {
   color: #ffffff;
-}
-
-.film-viewer__video-wrap {
-  margin-top: 0.9rem;
-  width: min(100%, 28rem);
-  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
-  border-radius: 0.4rem;
-  overflow: hidden;
-  background: #19171a;
-}
-
-.film-viewer__video {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border: 0;
 }
 
 .film-viewer__swap {
