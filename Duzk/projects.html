@@ -256,30 +256,64 @@
         const can = document.createElement("span");
         can.className = "film-roll__canister";
 
+        const topStack = document.createElement("span");
+        topStack.className = "film-roll__top-stack";
+
         const knob = document.createElement("span");
         knob.className = "film-roll__knob";
 
+        const capTop = document.createElement("span");
+        capTop.className = "film-roll__cap film-roll__cap--top";
+        capTop.setAttribute("aria-hidden", "true");
+
+        topStack.append(knob, capTop);
+
+        const body = document.createElement("span");
+        body.className = "film-roll__body";
+
+        const slit = document.createElement("span");
+        slit.className = "film-roll__slit";
+        slit.setAttribute("aria-hidden", "true");
+
         const band = document.createElement("span");
         band.className = "film-roll__label-band";
-
-        const rimT = document.createElement("span");
-        rimT.className = "film-roll__rim film-roll__rim--top";
-        const rimB = document.createElement("span");
-        rimB.className = "film-roll__rim film-roll__rim--bottom";
 
         const exp = document.createElement("span");
         exp.className = "film-roll__exp";
         exp.textContent = `${roll.frames.length} exp.`;
 
-        can.append(rimT, knob, band, exp, rimB);
+        body.append(slit, band, exp);
+
+        const capBottom = document.createElement("span");
+        capBottom.className = "film-roll__cap film-roll__cap--bottom";
+        capBottom.setAttribute("aria-hidden", "true");
+
+        can.append(topStack, body, capBottom);
 
         const leader = document.createElement("span");
         leader.className = "film-roll__leader";
+        const leaderInner = document.createElement("span");
+        leaderInner.className = "film-roll__leader-inner";
+
+        const perfTop = document.createElement("span");
+        perfTop.className = "film-roll__leader-perfs film-roll__leader-perfs--top";
+        perfTop.setAttribute("aria-hidden", "true");
+
+        const leaderFrame = document.createElement("span");
+        leaderFrame.className = "film-roll__leader-frame";
+
         const thumb = document.createElement("img");
         thumb.src = roll.frames[0].src;
         thumb.alt = "";
         thumb.decoding = "async";
-        leader.appendChild(thumb);
+        leaderFrame.appendChild(thumb);
+
+        const perfBot = document.createElement("span");
+        perfBot.className = "film-roll__leader-perfs film-roll__leader-perfs--bottom";
+        perfBot.setAttribute("aria-hidden", "true");
+
+        leaderInner.append(perfTop, leaderFrame, perfBot);
+        leader.appendChild(leaderInner);
 
         canWrap.append(can, leader);
 
