@@ -646,11 +646,12 @@ section h2 {
   pointer-events: auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
   max-height: 95vh;
 }
 
 .lightbox img {
-  width: auto;
+  width: min(92vw, 52rem);
   height: auto;
   max-width: 100%;
   max-height: min(72vh, 820px);
@@ -669,6 +670,11 @@ section h2 {
   max-height: min(72vh, 820px);
   margin: 0 auto;
   background: #19171a;
+}
+
+.lightbox img[hidden],
+#lightbox-video[hidden] {
+  display: none !important;
 }
 
 .lightbox-meta {
