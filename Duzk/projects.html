@@ -71,18 +71,6 @@
                         hidden
                       ></a>
                     </p>
-                    <div class="film-viewer__video-wrap" id="film-viewer-video-wrap" hidden>
-                      <iframe
-                        class="film-viewer__video"
-                        id="film-viewer-video"
-                        src=""
-                        title="Project video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen
-                      ></iframe>
-                    </div>
                   </div>
                   <div class="film-viewer__swap">
                     <label class="visually-hidden" for="film-roll-swap">Load a different roll</label>
@@ -133,6 +121,15 @@
       <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
       <div class="lightbox-content">
         <img id="lightbox-image" alt="" />
+        <iframe
+          id="lightbox-video"
+          title="Project video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+          hidden
+        ></iframe>
         <div class="lightbox-meta" id="lightbox-meta" hidden>
           <p class="lightbox-meta__label" id="lightbox-meta-label"></p>
           <p class="lightbox-meta__body" id="lightbox-meta-body"></p>
@@ -234,12 +231,12 @@
           href: "https://youtu.be/b0KFw7Yk31E",
           label: "Watch on YouTube",
         },
-        videoEmbed: "https://www.youtube.com/embed/b0KFw7Yk31E?si=aBYGqa92Aq2Vrs9B",
         frames: [
           {
             src: "https://img.youtube.com/vi/b0KFw7Yk31E/hqdefault.jpg",
             alt: "Animation Project video thumbnail",
             caption: "Duck Hunt FPS Concept",
+            videoEmbed: "https://www.youtube.com/embed/b0KFw7Yk31E?si=aBYGqa92Aq2Vrs9B",
             description:
               "This project was about creating a game simulation using Adobe After Effects. My work was inspired by a childhood game called Duck Hunt, combined with the modern first-person shooter style seen in games like Battlefield and Call of Duty.",
           },
@@ -259,8 +256,6 @@
     const stripShell = document.getElementById("film-strip-shell");
     const scrubEl = document.getElementById("film-scrub-range");
     const viewerProjectLink = document.getElementById("film-viewer-project-link");
-    const viewerVideoWrap = document.getElementById("film-viewer-video-wrap");
-    const viewerVideo = document.getElementById("film-viewer-video");
 
     let activeRollId = null;
     let scrubSyncLock = false;
@@ -410,6 +405,7 @@
         im.setAttribute("data-lightbox", "");
         im.setAttribute("data-caption", frame.caption);
         if (frame.description) im.setAttribute("data-description", frame.description);
+        if (frame.videoEmbed) im.setAttribute("data-video-embed", frame.videoEmbed);
         win.appendChild(im);
 
         mid.appendChild(win);
@@ -443,13 +439,6 @@
         viewerProjectLink.hidden = true;
       }
 
-      if (roll.videoEmbed) {
-        viewerVideo.src = roll.videoEmbed;
-        viewerVideoWrap.hidden = false;
-      } else {
-        viewerVideo.src = "";
-        viewerVideoWrap.hidden = true;
-      }
     }
 
     function syncScrubFromScroll() {
@@ -532,8 +521,6 @@
         window.setTimeout(() => {
           viewerPanel.hidden = true;
           stripShell.classList.remove("film-strip-shell--retracting");
-          viewerVideo.src = "";
-          viewerVideoWrap.hidden = true;
           activeRollId = null;
         }, 380);
       }, 420);
@@ -591,14 +578,26 @@
 
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxVideo = document.getElementById("lightbox-video");
     const lightboxClose = document.getElementById("lightbox-close");
     const lightboxMeta = document.getElementById("lightbox-meta");
     const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
 
     function openLightbox(image) {
-      lightboxImage.src = image.src;
-      lightboxImage.alt = image.alt || "Portfolio artwork";
+      const videoEmbed = image.getAttribute("data-video-embed");
+      if (videoEmbed) {
+        lightboxImage.hidden = true;
+        lightboxImage.removeAttribute("src");
+        lightboxVideo.src = videoEmbed;
+        lightboxVideo.hidden = false;
+      } else {
+        lightboxVideo.hidden = true;
+        lightboxVideo.removeAttribute("src");
+        lightboxImage.src = image.src;
+        lightboxImage.alt = image.alt || "Portfolio artwork";
+        lightboxImage.hidden = false;
+      }
       const cap = image.getAttribute("data-caption");
       const desc = image.getAttribute("data-description");
       if (cap || desc) {
@@ -619,6 +618,9 @@
     function closeLightbox() {
       lightbox.hidden = true;
       lightboxImage.removeAttribute("src");
+      lightboxVideo.removeAttribute("src");
+      lightboxVideo.hidden = true;
+      lightboxImage.hidden = false;
       lightboxMeta.hidden = true;
       lightboxMetaLabel.textContent = "";
       lightboxMetaBody.textContent = "";
