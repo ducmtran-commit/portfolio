@@ -31,16 +31,9 @@
           <h2 id="projects-heading" class="gallery-page-title">Duzk Gallery</h2>
           <p class="gallery-page-lead">Explore my collection of digital artwork and projects</p>
         </header>
-        <p class="prose projects-intro projects-intro--center">
-          Work is organized as film rolls—open any canister to browse frames. This page is the project overview; details live inside each roll.
-        </p>
 
         <div class="film-lab film-lab--centered-head" id="film-lab" aria-label="Film roll portfolio viewer">
-          <p class="section-label section-label--center">Film archive</p>
-          <h3 class="film-lab__title">Light table</h3>
-          <p class="prose film-lab__intro">
-            Each category is a 35mm-style roll on the bench. Open a canister to unspool the strip, scrub through frames, and swap rolls in place—like working on a light table.
-          </p>
+          <h3 class="film-lab__title">My Works</h3>
 
           <div class="film-lab__root">
             <div class="film-shelf-panel" id="film-shelf-panel">
@@ -497,6 +490,7 @@
       viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
       stripShell.classList.add("film-strip-shell--retracting");
       loadRollInViewer(rollId);
+      viewerPanel.scrollIntoView({ behavior: "smooth", block: "center" });
       requestAnimationFrame(() => {
         viewerPanel.classList.add("film-viewer-panel--visible");
         requestAnimationFrame(() => {
