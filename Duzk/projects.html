@@ -556,6 +556,7 @@
       viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
       stripShell.classList.add("film-strip-shell--retracting");
       loadRollInViewer(rollId);
+      viewerPanel.scrollIntoView({ behavior: "smooth", block: "center" });
       requestAnimationFrame(() => {
         viewerPanel.classList.add("film-viewer-panel--visible");
         requestAnimationFrame(() => {
@@ -571,20 +572,16 @@
     }
 
     function restoreShelfPosition() {
-      const returnY = shelfReturnScrollY;
       const returnRollId = shelfReturnRollId;
       const rollBtn = returnRollId ? document.getElementById(`film-roll-${returnRollId}`) : null;
 
       const apply = () => {
-        window.scrollTo({ top: returnY, left: 0, behavior: "auto" });
         if (rollBtn) {
-          const rect = rollBtn.getBoundingClientRect();
-          const margin = 80;
-          const inView = rect.top >= margin && rect.bottom <= window.innerHeight - margin;
-          if (!inView) {
-            rollBtn.scrollIntoView({ block: "center", behavior: "auto" });
-          }
+          // Always return to the roll you opened (e.g. Animation Project), not the top of the shelf
+          rollBtn.scrollIntoView({ block: "center", behavior: "auto" });
           rollBtn.focus({ preventScroll: true });
+        } else {
+          window.scrollTo({ top: shelfReturnScrollY, left: 0, behavior: "auto" });
         }
       };
 
