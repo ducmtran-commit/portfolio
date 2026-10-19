@@ -1110,10 +1110,9 @@ footer.site .wrap {
   font-size: 0.8rem;
 }
 
+/* Hide the side spool while a collection is open — frames stay centered and clean */
 .film-shelf .film-spool {
-  margin-bottom: 0;
-  transform: scale(1.12);
-  transform-origin: center bottom;
+  display: none;
 }
 
 .film-shelf--viewing .film-roll-slot:not(.film-roll-slot--open) {
