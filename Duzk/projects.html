@@ -320,6 +320,11 @@
     function buildShelf() {
       shelfEl.innerHTML = "";
       FILM_ROLLS.forEach((roll) => {
+        const slot = document.createElement("div");
+        slot.className = "film-roll-slot";
+        slot.id = `film-roll-slot-${roll.id}`;
+        slot.dataset.rollId = roll.id;
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "film-roll";
@@ -416,7 +421,8 @@
         mat.appendChild(canWrap);
         btn.append(mat, meta);
         btn.addEventListener("click", () => openViewer(roll.id));
-        shelfEl.appendChild(btn);
+        slot.appendChild(btn);
+        shelfEl.appendChild(slot);
       });
     }
 
@@ -548,23 +554,30 @@
     }
 
     function placeViewerAtRoll(rollId) {
+      const slot = document.getElementById(`film-roll-slot-${rollId}`);
       const rollBtn = document.getElementById(`film-roll-${rollId}`);
-      if (!rollBtn) return null;
+      if (!slot || !rollBtn) return null;
 
       if (slotRollId && slotRollId !== rollId) {
+        const prevSlot = document.getElementById(`film-roll-slot-${slotRollId}`);
         const prevBtn = document.getElementById(`film-roll-${slotRollId}`);
+        if (prevSlot) prevSlot.classList.remove("film-roll-slot--open");
         if (prevBtn) prevBtn.hidden = false;
       }
 
       slotRollId = rollId;
+      // Hide the canister image at this project point until the user returns
       rollBtn.hidden = true;
-      rollBtn.after(viewerPanel);
+      slot.classList.add("film-roll-slot--open");
+      slot.appendChild(viewerPanel);
       shelfEl.classList.add("film-shelf--viewing");
       return rollBtn;
     }
 
     function returnViewerToHome() {
+      const slot = slotRollId ? document.getElementById(`film-roll-slot-${slotRollId}`) : null;
       const rollBtn = slotRollId ? document.getElementById(`film-roll-${slotRollId}`) : null;
+      if (slot) slot.classList.remove("film-roll-slot--open");
       if (rollBtn) rollBtn.hidden = false;
       shelfEl.classList.remove("film-shelf--viewing");
       if (filmLabRoot && viewerPanel.parentElement !== filmLabRoot) {
@@ -581,7 +594,8 @@
       activeRollId = rollId;
       shelfPanel.classList.remove("film-shelf-panel--out");
       viewerPanel.hidden = false;
-      viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
+      viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap", "film-viewer-panel--visible");
+      // Keep the original unspool open effect, but play it in this roll's slot
       stripShell.classList.add("film-strip-shell--retracting");
       loadRollInViewer(rollId);
       requestAnimationFrame(() => {
@@ -599,6 +613,7 @@
     }
 
     function closeViewer() {
+      // Retract film first, then bring the canister image back in the same spot
       stripShell.classList.add("film-strip-shell--retracting");
       window.setTimeout(() => {
         viewerPanel.classList.remove("film-viewer-panel--visible", "film-viewer-panel--enter");
