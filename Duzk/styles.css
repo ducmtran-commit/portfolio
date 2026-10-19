@@ -1039,6 +1039,23 @@ footer.site .wrap {
   padding: 0.15rem 0;
 }
 
+/* Opened film stays in the clicked roll's slot — no page jump */
+.film-shelf .film-viewer-panel {
+  width: 100%;
+  max-width: min(100%, 56rem);
+  margin-inline: auto;
+}
+
+.film-shelf--viewing .film-roll:not([hidden]) {
+  opacity: 0.42;
+  transition: opacity 0.35s ease;
+}
+
+.film-shelf--viewing .film-roll:not([hidden]):hover,
+.film-shelf--viewing .film-roll:not([hidden]):focus-visible {
+  opacity: 1;
+}
+
 /* Shelf roll — one roll per row, full width of bench */
 .film-roll {
   display: flex;
