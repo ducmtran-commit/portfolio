@@ -1049,8 +1049,19 @@ footer.site .wrap {
   margin-inline: auto;
 }
 
+.film-roll--stashed,
+.film-roll[hidden] {
+  display: none !important;
+}
+
 .film-shelf .film-viewer-panel {
   width: 100%;
+  display: block;
+}
+
+.film-shelf .film-viewer-panel.film-viewer-panel--visible {
+  opacity: 1;
+  transform: none;
 }
 
 .film-shelf--viewing .film-roll-slot:not(.film-roll-slot--open) {
