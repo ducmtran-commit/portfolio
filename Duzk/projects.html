@@ -655,6 +655,36 @@
       return items;
     }
 
+    function resolveFrameSrc(src) {
+      try {
+        return new URL(src, document.baseURI).href;
+      } catch {
+        return src;
+      }
+    }
+
+    function findGalleryIndex(image) {
+      const gallery = getLightboxGallery();
+      const attrSrc = image.getAttribute("src") || "";
+      const resolvedSrc = image.src;
+      let found = gallery.findIndex((item) => {
+        if (activeRollId && item.rollId !== activeRollId) return false;
+        return item.frame.src === attrSrc || resolveFrameSrc(item.frame.src) === resolvedSrc;
+      });
+      if (found < 0) {
+        found = gallery.findIndex(
+          (item) => item.frame.src === attrSrc || resolveFrameSrc(item.frame.src) === resolvedSrc
+        );
+      }
+      return found;
+    }
+
+    function syncViewerToGalleryItem(item) {
+      if (!item || viewerPanel.hidden) return;
+      if (item.rollId === activeRollId) return;
+      loadRollInViewer(item.rollId);
+    }
+
     function syncNavButtons(count) {
       const show = count > 1;
       lightboxPrev.hidden = !show;
@@ -705,10 +735,11 @@
 
     function openLightbox(image) {
       const gallery = getLightboxGallery();
-      const src = image.getAttribute("src") || image.src;
-      const found = gallery.findIndex((item) => item.frame.src === src);
+      const found = findGalleryIndex(image);
       lightboxIndex = found >= 0 ? found : 0;
-      showLightboxFrame(gallery[lightboxIndex].frame);
+      const item = gallery[lightboxIndex];
+      showLightboxFrame(item.frame);
+      syncViewerToGalleryItem(item);
       syncNavButtons(gallery.length);
       lightbox.hidden = false;
       document.body.style.overflow = "hidden";
@@ -718,10 +749,15 @@
       const gallery = getLightboxGallery();
       if (gallery.length < 2) return;
       lightboxIndex = (lightboxIndex + delta + gallery.length) % gallery.length;
-      showLightboxFrame(gallery[lightboxIndex].frame);
+      const item = gallery[lightboxIndex];
+      showLightboxFrame(item.frame);
+      syncViewerToGalleryItem(item);
     }
 
     function closeLightbox() {
+      const gallery = getLightboxGallery();
+      const item = gallery[lightboxIndex];
+      if (item) syncViewerToGalleryItem(item);
       lightbox.hidden = true;
       lightboxImage.removeAttribute("src");
       lightboxVideo.removeAttribute("src");
