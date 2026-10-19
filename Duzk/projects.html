@@ -420,10 +420,20 @@
 
         mat.appendChild(canWrap);
         btn.append(mat, meta);
-        btn.addEventListener("click", () => openViewer(roll.id));
         slot.appendChild(btn);
         shelfEl.appendChild(slot);
       });
+
+      // Event delegation so opening keeps working after slot moves
+      if (!shelfEl.dataset.openBound) {
+        shelfEl.dataset.openBound = "1";
+        shelfEl.addEventListener("click", (event) => {
+          const btn = event.target.closest(".film-roll");
+          if (!btn || btn.hidden || !shelfEl.contains(btn)) return;
+          event.preventDefault();
+          openViewer(btn.dataset.rollId);
+        });
+      }
     }
 
     function buildSwapOptions(selectedId) {
@@ -556,17 +566,21 @@
     function placeViewerAtRoll(rollId) {
       const slot = document.getElementById(`film-roll-slot-${rollId}`);
       const rollBtn = document.getElementById(`film-roll-${rollId}`);
-      if (!slot || !rollBtn) return null;
+      if (!slot || !rollBtn || !viewerPanel) return null;
 
       if (slotRollId && slotRollId !== rollId) {
         const prevSlot = document.getElementById(`film-roll-slot-${slotRollId}`);
         const prevBtn = document.getElementById(`film-roll-${slotRollId}`);
         if (prevSlot) prevSlot.classList.remove("film-roll-slot--open");
-        if (prevBtn) prevBtn.hidden = false;
+        if (prevBtn) {
+          prevBtn.hidden = false;
+          prevBtn.classList.remove("film-roll--stashed");
+        }
       }
 
       slotRollId = rollId;
-      // Hide the canister image at this project point until the user returns
+      // Hide the canister image here until the user returns to the shelf
+      rollBtn.classList.add("film-roll--stashed");
       rollBtn.hidden = true;
       slot.classList.add("film-roll-slot--open");
       slot.appendChild(viewerPanel);
@@ -578,11 +592,12 @@
       const slot = slotRollId ? document.getElementById(`film-roll-slot-${slotRollId}`) : null;
       const rollBtn = slotRollId ? document.getElementById(`film-roll-${slotRollId}`) : null;
       if (slot) slot.classList.remove("film-roll-slot--open");
-      if (rollBtn) rollBtn.hidden = false;
-      shelfEl.classList.remove("film-shelf--viewing");
-      if (filmLabRoot && viewerPanel.parentElement !== filmLabRoot) {
-        filmLabRoot.appendChild(viewerPanel);
+      if (rollBtn) {
+        rollBtn.classList.remove("film-roll--stashed");
+        rollBtn.hidden = false;
       }
+      shelfEl.classList.remove("film-shelf--viewing");
+      if (filmLabRoot) filmLabRoot.appendChild(viewerPanel);
       slotRollId = null;
       return rollBtn;
     }
@@ -593,32 +608,36 @@
 
       activeRollId = rollId;
       shelfPanel.classList.remove("film-shelf-panel--out");
+
+      // Show the film in this slot immediately, then play the unspool effect
       viewerPanel.hidden = false;
-      viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap", "film-viewer-panel--visible");
-      // Keep the original unspool open effect, but play it in this roll's slot
+      viewerPanel.removeAttribute("hidden");
+      viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
+      viewerPanel.classList.add("film-viewer-panel--visible");
+
       stripShell.classList.add("film-strip-shell--retracting");
       loadRollInViewer(rollId);
+      void stripShell.offsetWidth;
+
       requestAnimationFrame(() => {
-        viewerPanel.classList.add("film-viewer-panel--visible");
+        stripShell.classList.remove("film-strip-shell--retracting");
+        stripEl.classList.add("film-strip--reveal");
+        window.setTimeout(() => stripEl.classList.remove("film-strip--reveal"), UNSPOOL_MS + 120);
         requestAnimationFrame(() => {
-          stripShell.classList.remove("film-strip-shell--retracting");
-          stripEl.classList.add("film-strip--reveal");
-          window.setTimeout(() => stripEl.classList.remove("film-strip--reveal"), UNSPOOL_MS + 120);
-          requestAnimationFrame(() => {
-            syncScrubFromScroll();
-            rollSwap.focus({ preventScroll: true });
-          });
+          syncScrubFromScroll();
+          rollSwap.focus({ preventScroll: true });
         });
       });
     }
 
     function closeViewer() {
-      // Retract film first, then bring the canister image back in the same spot
+      if (viewerPanel.hidden && !slotRollId) return;
       stripShell.classList.add("film-strip-shell--retracting");
       window.setTimeout(() => {
         viewerPanel.classList.remove("film-viewer-panel--visible", "film-viewer-panel--enter");
         window.setTimeout(() => {
           viewerPanel.hidden = true;
+          viewerPanel.setAttribute("hidden", "");
           stripShell.classList.remove("film-strip-shell--retracting");
           const rollBtn = returnViewerToHome();
           activeRollId = null;
@@ -662,18 +681,6 @@
     applyProjectsHash();
     window.addEventListener("hashchange", applyProjectsHash);
 
-    stripEl.addEventListener("keydown", (event) => {
-      if (!lightbox.hidden) return;
-      const step = Math.min(160, stripEl.clientWidth * 0.35);
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        stripEl.scrollBy({ left: step, behavior: "smooth" });
-      } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        stripEl.scrollBy({ left: -step, behavior: "smooth" });
-      }
-    });
-
     window.addEventListener("resize", () => {
       if (!viewerPanel.hidden) syncScrubFromScroll();
     });
@@ -689,6 +696,18 @@
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
     const lightboxMetaLinkWrap = document.getElementById("lightbox-meta-link-wrap");
     const lightboxMetaLink = document.getElementById("lightbox-meta-link");
+
+    stripEl.addEventListener("keydown", (event) => {
+      if (!lightbox.hidden) return;
+      const step = Math.min(160, stripEl.clientWidth * 0.35);
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stripEl.scrollBy({ left: step, behavior: "smooth" });
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stripEl.scrollBy({ left: -step, behavior: "smooth" });
+      }
+    });
 
     let lightboxIndex = 0;
 
