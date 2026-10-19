@@ -976,6 +976,14 @@ footer.site .wrap {
 }
 
 /* Stronger specificity to ensure project page headings visibly resize */
+.page-projects {
+  padding-top: clamp(1.15rem, 3vw, 1.85rem);
+}
+
+.page-projects .gallery-page-head {
+  margin-bottom: clamp(0.65rem, 1.8vw, 1rem);
+}
+
 .page-projects .gallery-page-title {
   font-size: clamp(2.9rem, 6.5vw, 4.2rem);
 }
@@ -984,8 +992,13 @@ footer.site .wrap {
   font-size: clamp(1.3rem, 2.2vw, 1.7rem);
 }
 
+.page-projects .film-lab {
+  padding-top: clamp(1rem, 2.4vw, 1.35rem);
+}
+
 .page-projects .film-lab__title {
   font-size: clamp(2rem, 4vw, 2.5rem);
+  margin-bottom: clamp(1.85rem, 4.5vw, 2.85rem);
 }
 
 .film-lab__intro {
