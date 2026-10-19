@@ -310,6 +310,8 @@
 
     let activeRollId = null;
     let scrubSyncLock = false;
+    let shelfReturnScrollY = 0;
+    let shelfReturnRollId = null;
 
     function rollById(id) {
       return FILM_ROLLS.find((r) => r.id === id);
@@ -546,6 +548,8 @@
     }
 
     function openViewer(rollId) {
+      shelfReturnScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      shelfReturnRollId = rollId;
       activeRollId = rollId;
       shelfPanel.classList.add("film-shelf-panel--out");
       viewerPanel.hidden = false;
@@ -567,6 +571,30 @@
       });
     }
 
+    function restoreShelfPosition() {
+      const returnY = shelfReturnScrollY;
+      const returnRollId = shelfReturnRollId;
+      const rollBtn = returnRollId ? document.getElementById(`film-roll-${returnRollId}`) : null;
+
+      const apply = () => {
+        window.scrollTo({ top: returnY, left: 0, behavior: "auto" });
+        if (rollBtn) {
+          const rect = rollBtn.getBoundingClientRect();
+          const margin = 80;
+          const inView = rect.top >= margin && rect.bottom <= window.innerHeight - margin;
+          if (!inView) {
+            rollBtn.scrollIntoView({ block: "center", behavior: "auto" });
+          }
+          rollBtn.focus({ preventScroll: true });
+        }
+      };
+
+      requestAnimationFrame(() => {
+        apply();
+        requestAnimationFrame(apply);
+      });
+    }
+
     function closeViewer() {
       stripShell.classList.add("film-strip-shell--retracting");
       window.setTimeout(() => {
@@ -576,6 +604,7 @@
           viewerPanel.hidden = true;
           stripShell.classList.remove("film-strip-shell--retracting");
           activeRollId = null;
+          restoreShelfPosition();
         }, 380);
       }, 420);
     }
