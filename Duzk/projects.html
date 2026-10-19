@@ -556,7 +556,6 @@
       viewerPanel.classList.remove("film-viewer-panel--enter", "film-viewer-panel--swap");
       stripShell.classList.add("film-strip-shell--retracting");
       loadRollInViewer(rollId);
-      viewerPanel.scrollIntoView({ behavior: "smooth", block: "center" });
       requestAnimationFrame(() => {
         viewerPanel.classList.add("film-viewer-panel--visible");
         requestAnimationFrame(() => {
