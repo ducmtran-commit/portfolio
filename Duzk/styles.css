@@ -1039,20 +1039,27 @@ footer.site .wrap {
   padding: 0.15rem 0;
 }
 
-/* Opened film stays in the clicked roll's slot — no page jump */
-.film-shelf .film-viewer-panel {
+/* Each collection keeps a fixed slot so the open film stays where you clicked */
+.film-roll-slot {
   width: 100%;
+}
+
+.film-roll-slot--open {
   max-width: min(100%, 56rem);
   margin-inline: auto;
 }
 
-.film-shelf--viewing .film-roll:not([hidden]) {
+.film-shelf .film-viewer-panel {
+  width: 100%;
+}
+
+.film-shelf--viewing .film-roll-slot:not(.film-roll-slot--open) {
   opacity: 0.42;
   transition: opacity 0.35s ease;
 }
 
-.film-shelf--viewing .film-roll:not([hidden]):hover,
-.film-shelf--viewing .film-roll:not([hidden]):focus-visible {
+.film-shelf--viewing .film-roll-slot:not(.film-roll-slot--open):hover,
+.film-shelf--viewing .film-roll-slot:not(.film-roll-slot--open):focus-within {
   opacity: 1;
 }
 
