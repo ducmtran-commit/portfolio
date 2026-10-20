@@ -17,7 +17,7 @@
       <nav aria-label="Primary">
         <ul>
           <li><a href="index.html" aria-current="page">Home</a></li>
-          <li><a href="#film-strip" id="nav-portfolio-link">Portfolio</a></li>
+          <li><a href="projects.html">Projects</a></li>
           <li><a href="#portfolio-sections" id="nav-about-link">About</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -32,7 +32,7 @@
         <p class="tagline">
           Digital Artist focused on concept art, illustration, and visual experiments for interactive media.
         </p>
-        <a class="hero-cta" href="#film-strip">Portfolio</a>
+        <a class="hero-cta" href="projects.html#projects-heading">Portfolio sections</a>
       </div>
     </div>
 
@@ -62,11 +62,7 @@
       </div>
     </section>
 
-    <section id="film-strip" class="home-highlights film-experience" aria-labelledby="portfolio-heading">
-      <div class="wrap film-experience__head">
-        <p class="section-label">Portfolio</p>
-        <h2 id="portfolio-heading" class="visually-hidden">Portfolio</h2>
-      </div>
+    <section id="film-strip" class="home-highlights film-experience" aria-label="Animated film strip portfolio">
       <div class="film-stage" data-direction="rtl">
         <div class="film-track" aria-label="Film strip moving right to left">
           <article class="film-frame is-active">
@@ -322,19 +318,12 @@
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
     const aboutNavLink = document.getElementById("nav-about-link");
     const aboutSection = document.getElementById("portfolio-sections");
-    const portfolioNavLink = document.getElementById("nav-portfolio-link");
     let lightboxIndex = 0;
 
     aboutNavLink.addEventListener("click", (event) => {
       event.preventDefault();
       aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
       window.history.replaceState(null, "", "#portfolio-sections");
-    });
-
-    portfolioNavLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      filmSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.history.replaceState(null, "", "#film-strip");
     });
 
     function getLightboxImages() {
