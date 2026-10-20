@@ -326,6 +326,39 @@ section h2 {
   padding-top: 0.35rem;
 }
 
+.film-experience__head {
+  text-align: center;
+  margin-bottom: 0.15rem;
+}
+
+.film-experience__head .section-label {
+  margin-bottom: 0;
+}
+
+.film-experience__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.35rem 0 1.25rem;
+}
+
+.portfolio-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 999px;
+}
+
+.portfolio-cta:hover {
+  opacity: 0.92;
+  color: #fff;
+}
+
 .film-stage {
   --frame-size: min(52vw, 18rem);
   overflow: hidden;
