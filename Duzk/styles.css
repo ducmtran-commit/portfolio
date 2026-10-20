@@ -326,15 +326,6 @@ section h2 {
   padding-top: 0.35rem;
 }
 
-.film-experience__head {
-  text-align: center;
-  margin-bottom: 0.35rem;
-}
-
-.film-experience__head .section-label {
-  margin-bottom: 0;
-}
-
 .film-stage {
   --frame-size: min(52vw, 18rem);
   overflow: hidden;
