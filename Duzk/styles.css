@@ -1478,11 +1478,11 @@ footer.site .wrap {
   transform: translateY(0);
 }
 
-/* Strip shell: horizontal “unspool” from canister (scale from right) */
+/* Strip shell: horizontal unspool left → right (matches frame order) */
 .film-strip-shell {
   flex: 1;
   min-width: 0;
-  transform-origin: right center;
+  transform-origin: left center;
   transform: scaleX(1);
   opacity: 1;
   transition:
@@ -1547,7 +1547,7 @@ footer.site .wrap {
 @keyframes film-cell-peek {
   from {
     opacity: 0;
-    transform: translateX(1rem);
+    transform: translateX(-1rem);
   }
   to {
     opacity: 1;
