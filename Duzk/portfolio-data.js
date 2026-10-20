@@ -47,6 +47,20 @@ window.FILM_ROLLS = [
         description:
           "I created my digital collage, Being an Artist, which experiments with the first life of digital materials. I collected images from my self-portrait, photographs, existing artworks, stock images, advertisements, planets, and galaxies. Each image already had a different purpose and history, such as my self-portrait represented my artist identity, advertisements reflected consumer culture, existing artworks connected my collage to creativity, and the planet and galaxy images suggested imagination and the larger world beyond everyday life. After combining these fragments, I gave them a new life and created a visual story about the choices in becoming an artist. The collage shows how society can judge or pressure people when they choose art as a career.",
       },
+      {
+        src: "assets/digital-works-anime-spartan-zine.jpg",
+        alt: "Anime Illustration Spartan Edition zine cover with two characters and Pikachu",
+        caption: "The Cover of Anime Illustration Spartan Edition Zine",
+        description:
+          "Illustration with digital edit for Anime Illustration Spartan Edition Zine.",
+      },
+      {
+        src: "assets/digital-works-anime-spartan-zine-back.jpg",
+        alt: "Anime Illustration Spartan Edition zine back cover with four anime characters and See Ya text",
+        caption: "The Back Anime Illustration Spartan Edition Zine",
+        description:
+          "Illustration with digital edit for Anime Illustration Spartan Edition Zine.",
+      },
     ],
   },
   {
