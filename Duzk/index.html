@@ -87,9 +87,21 @@
       <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">×</button>
       <div class="lightbox-content">
         <img id="lightbox-image" alt="" />
+        <iframe
+          id="lightbox-video"
+          title="Project video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+          hidden
+        ></iframe>
         <div class="lightbox-meta" id="lightbox-meta" hidden>
           <p class="lightbox-meta__label" id="lightbox-meta-label"></p>
           <p class="lightbox-meta__body" id="lightbox-meta-body"></p>
+          <p class="lightbox-meta__body" id="lightbox-meta-link-wrap" hidden>
+            <a id="lightbox-meta-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+          </p>
         </div>
       </div>
     </div>
@@ -115,6 +127,9 @@
             alt: frame.alt || frame.caption || roll.name,
             caption: frame.caption,
             description: frame.description || "",
+            videoEmbed: frame.videoEmbed || "",
+            linkHref: frame.linkHref || "",
+            linkLabel: frame.linkLabel || "",
             blurb: frame.description
               ? frame.description.length > 110
                 ? `${frame.description.slice(0, 107).trim()}…`
@@ -152,6 +167,9 @@
         img.setAttribute("data-lightbox", "");
         img.setAttribute("data-caption", work.caption || work.rollName);
         if (work.description) img.setAttribute("data-description", work.description);
+        if (work.videoEmbed) img.setAttribute("data-video-embed", work.videoEmbed);
+        if (work.linkHref) img.setAttribute("data-link-href", work.linkHref);
+        if (work.linkLabel) img.setAttribute("data-link-label", work.linkLabel);
         art.appendChild(img);
 
         const title = document.createElement("h3");
@@ -286,12 +304,15 @@
 
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxVideo = document.getElementById("lightbox-video");
     const lightboxClose = document.getElementById("lightbox-close");
     const lightboxPrev = document.getElementById("lightbox-prev");
     const lightboxNext = document.getElementById("lightbox-next");
     const lightboxMeta = document.getElementById("lightbox-meta");
     const lightboxMetaLabel = document.getElementById("lightbox-meta-label");
     const lightboxMetaBody = document.getElementById("lightbox-meta-body");
+    const lightboxMetaLinkWrap = document.getElementById("lightbox-meta-link-wrap");
+    const lightboxMetaLink = document.getElementById("lightbox-meta-link");
     const aboutNavLink = document.getElementById("nav-about-link");
     const aboutSection = document.getElementById("portfolio-sections");
     let lightboxIndex = 0;
@@ -313,18 +334,54 @@
     }
 
     function showLightboxImage(image) {
-      lightboxImage.src = image.src;
-      lightboxImage.alt = image.alt || "Portfolio artwork";
+      const videoEmbed = image.getAttribute("data-video-embed");
+      if (videoEmbed) {
+        lightboxImage.hidden = true;
+        lightboxImage.removeAttribute("src");
+        lightboxVideo.src = videoEmbed;
+        lightboxVideo.hidden = false;
+      } else {
+        lightboxVideo.hidden = true;
+        lightboxVideo.removeAttribute("src");
+        lightboxImage.src = image.src;
+        lightboxImage.alt = image.alt || "Portfolio artwork";
+        lightboxImage.hidden = false;
+      }
+
       const cap = image.getAttribute("data-caption");
       const desc = image.getAttribute("data-description");
-      if (cap || desc) {
-        lightboxMetaLabel.textContent = cap || "";
+      const linkHref = image.getAttribute("data-link-href");
+      const linkLabel = image.getAttribute("data-link-label");
+
+      lightboxMetaLink.href = "#";
+      lightboxMetaLink.textContent = "";
+      lightboxMetaLinkWrap.hidden = true;
+
+      if (cap || desc || linkHref) {
+        lightboxMetaLabel.innerHTML = "";
+        if (cap && linkHref) {
+          const titleLink = document.createElement("a");
+          titleLink.className = "lightbox-meta__title-link";
+          titleLink.href = linkHref;
+          titleLink.target = "_blank";
+          titleLink.rel = "noopener noreferrer";
+          titleLink.textContent = cap;
+          lightboxMetaLabel.appendChild(titleLink);
+          lightboxMetaLabel.hidden = false;
+        } else {
+          lightboxMetaLabel.textContent = cap || "";
+          lightboxMetaLabel.hidden = !cap;
+          if (linkHref) {
+            lightboxMetaLink.href = linkHref;
+            lightboxMetaLink.textContent = linkLabel || linkHref;
+            lightboxMetaLinkWrap.hidden = false;
+          }
+        }
         lightboxMetaBody.textContent = desc || "";
-        lightboxMetaLabel.hidden = !cap;
         lightboxMetaBody.hidden = !desc;
         lightboxMeta.hidden = false;
       } else {
-        lightboxMetaLabel.textContent = "";
+        lightboxMetaLabel.innerHTML = "";
         lightboxMetaBody.textContent = "";
         lightboxMeta.hidden = true;
       }
@@ -350,9 +407,15 @@
     function closeLightbox() {
       lightbox.hidden = true;
       lightboxImage.removeAttribute("src");
+      lightboxVideo.removeAttribute("src");
+      lightboxVideo.hidden = true;
+      lightboxImage.hidden = false;
       lightboxMeta.hidden = true;
-      lightboxMetaLabel.textContent = "";
+      lightboxMetaLabel.innerHTML = "";
       lightboxMetaBody.textContent = "";
+      lightboxMetaLink.href = "#";
+      lightboxMetaLink.textContent = "";
+      lightboxMetaLinkWrap.hidden = true;
       document.body.style.overflow = "";
     }
 
