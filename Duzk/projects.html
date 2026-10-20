@@ -256,16 +256,12 @@
         id: "code",
         name: "Creative Coding",
         type: "p5.js · Interactive",
-        /* Swap href for your shared sketch, e.g. https://editor.p5js.org/username/full/… */
-        projectLink: {
-          href: "https://editor.p5js.org/ductran1807/sketches/M6AkOCM7V",
-          label: "Open p5.js sketch",
-        },
         frames: [
           {
             src: "assets/creative-coding-robot.png",
             alt: "p5.js robot in cyberpunk scene",
             caption: "Robot",
+            linkHref: "https://editor.p5js.org/ductran1807/sketches/M6AkOCM7V",
             description:
               "Built in p5.js with a cyberpunk street scene as the plate: a geometric robot and floating shapes suggesting portals and tech-driven control, in line with the assignment brief.",
           },
@@ -274,7 +270,6 @@
             alt: "PixTogether 8-bit live pixel arena lobby screen",
             caption: "PixTogether",
             linkHref: "https://coop-pixel-board.onrender.com/",
-            linkLabel: "Open PixTogether",
             description:
               "PixTogether is a collaborative drawing website where people can create pixel art together in real time. The idea is to make something simple, fun, and easy to join, where anyone can start drawing without needing instructions or experience. Users can share the same canvas at the same time, watch others draw live, and create multiple spaces so more people can join and have room to experiment and play. I chose pixel art instead of vector drawing because it lowers the barrier to participation. Drawing pixels with a mouse is much more accessible and less intimidating than using complex tools or requiring a drawing tablet. The goal is to focus on the experience of making something together—fast, playful, and collaborative—rather than technical skill or precision. PixTogether is about enjoying the process and creating a shared moment through simple interactions.",
           },
@@ -530,7 +525,18 @@
 
         const cap = document.createElement("p");
         cap.className = "film-cell__caption";
-        cap.textContent = frame.caption;
+        if (frame.linkHref) {
+          const titleLink = document.createElement("a");
+          titleLink.className = "film-cell__caption-link";
+          titleLink.href = frame.linkHref;
+          titleLink.target = "_blank";
+          titleLink.rel = "noopener noreferrer";
+          titleLink.textContent = frame.caption;
+          titleLink.addEventListener("click", (event) => event.stopPropagation());
+          cap.appendChild(titleLink);
+        } else {
+          cap.textContent = frame.caption;
+        }
 
         cell.append(stock, cap);
         stripEl.appendChild(cell);
@@ -815,27 +821,36 @@
       const desc = frame.description;
       const linkHref = frame.linkHref;
       const linkLabel = frame.linkLabel;
+      lightboxMetaLink.href = "#";
+      lightboxMetaLink.textContent = "";
+      lightboxMetaLinkWrap.hidden = true;
+
       if (cap || desc || linkHref) {
-        lightboxMetaLabel.textContent = cap || "";
-        lightboxMetaBody.textContent = desc || "";
-        lightboxMetaLabel.hidden = !cap;
-        lightboxMetaBody.hidden = !desc;
-        if (linkHref) {
-          lightboxMetaLink.href = linkHref;
-          lightboxMetaLink.textContent = linkLabel || linkHref;
-          lightboxMetaLinkWrap.hidden = false;
+        lightboxMetaLabel.innerHTML = "";
+        if (cap && linkHref) {
+          const titleLink = document.createElement("a");
+          titleLink.className = "lightbox-meta__title-link";
+          titleLink.href = linkHref;
+          titleLink.target = "_blank";
+          titleLink.rel = "noopener noreferrer";
+          titleLink.textContent = cap;
+          lightboxMetaLabel.appendChild(titleLink);
+          lightboxMetaLabel.hidden = false;
         } else {
-          lightboxMetaLink.href = "#";
-          lightboxMetaLink.textContent = "";
-          lightboxMetaLinkWrap.hidden = true;
+          lightboxMetaLabel.textContent = cap || "";
+          lightboxMetaLabel.hidden = !cap;
+          if (linkHref) {
+            lightboxMetaLink.href = linkHref;
+            lightboxMetaLink.textContent = linkLabel || linkHref;
+            lightboxMetaLinkWrap.hidden = false;
+          }
         }
+        lightboxMetaBody.textContent = desc || "";
+        lightboxMetaBody.hidden = !desc;
         lightboxMeta.hidden = false;
       } else {
         lightboxMetaLabel.textContent = "";
         lightboxMetaBody.textContent = "";
-        lightboxMetaLink.href = "#";
-        lightboxMetaLink.textContent = "";
-        lightboxMetaLinkWrap.hidden = true;
         lightboxMeta.hidden = true;
       }
     }
@@ -871,7 +886,7 @@
       lightboxVideo.hidden = true;
       lightboxImage.hidden = false;
       lightboxMeta.hidden = true;
-      lightboxMetaLabel.textContent = "";
+      lightboxMetaLabel.innerHTML = "";
       lightboxMetaBody.textContent = "";
       lightboxMetaLink.href = "#";
       lightboxMetaLink.textContent = "";
