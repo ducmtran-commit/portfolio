@@ -344,19 +344,22 @@ section h2 {
 .portfolio-cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.15rem;
-  background: var(--accent);
-  color: #fff;
+  gap: 0.45rem;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.95rem;
-  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .portfolio-cta:hover {
-  opacity: 0.92;
-  color: #fff;
+  color: var(--accent);
+  opacity: 1;
 }
 
 .film-stage {
