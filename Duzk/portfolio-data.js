@@ -51,6 +51,8 @@ window.FILM_ROLLS = [
         src: "assets/digital-works-anime-spartan-zine.jpg",
         alt: "Anime Illustration Spartan Edition zine cover with two characters and Pikachu",
         caption: "The Cover of Anime Illustration Spartan Edition Zine",
+        linkHref: "assets/anime-zine-spartan-edition-2025.pdf",
+        linkLabel: "View / Download PDF",
         description:
           "Illustration with digital edit for Anime Illustration Spartan Edition Zine.",
       },
@@ -58,6 +60,8 @@ window.FILM_ROLLS = [
         src: "assets/digital-works-anime-spartan-zine-back.jpg",
         alt: "Anime Illustration Spartan Edition zine back cover with four anime characters and See Ya text",
         caption: "The Back Anime Illustration Spartan Edition Zine",
+        linkHref: "assets/anime-zine-spartan-edition-2025.pdf",
+        linkLabel: "View / Download PDF",
         description:
           "Illustration with digital edit for Anime Illustration Spartan Edition Zine.",
       },
