@@ -694,6 +694,16 @@ section h2 {
   color: rgba(233, 50, 46, 0.95);
 }
 
+.lightbox-meta__title-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.lightbox-meta__title-link:hover {
+  opacity: 0.85;
+}
+
 .lightbox-meta__body {
   margin: 0;
   font-size: 0.98rem;
@@ -1855,6 +1865,16 @@ footer.site .wrap {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(149, 151, 148, 0.92);
+}
+
+.film-cell__caption-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.film-cell__caption-link:hover {
+  color: rgba(233, 50, 46, 0.95);
 }
 
 .film-scrub {
