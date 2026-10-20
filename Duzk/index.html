@@ -67,105 +67,10 @@
         <h2 id="portfolio-heading" class="visually-hidden">Portfolio</h2>
       </div>
       <div class="film-stage" data-direction="rtl">
-        <div class="film-track" aria-label="Film strip moving right to left">
-          <article class="film-frame is-active">
-            <div class="film-art">
-              <img
-                src="assets/glitch-light-sunset.png"
-                alt="Glitch art — light level, sunset scene"
-                data-lightbox
-                data-caption="Light"
-                data-description="A subtle, controlled glitch on a coastal sunset—enough digital distortion to feel electric while keeping the original mood and composition readable."
-              />
-            </div>
-            <h3>Glitch Art — Light</h3>
-            <p>Subtle code-based distortion over a coastal sunset.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/glitch-medium-band.png"
-                alt="Glitch art — medium level, band portrait"
-                data-lightbox
-                data-caption="Medium"
-                data-description="Stronger color shifts and horizontal slice artifacts across a band portrait, with faces and silhouettes still clearly recognizable."
-              />
-            </div>
-            <h3>Glitch Art — Medium</h3>
-            <p>Stronger slice and color shifts while keeping subjects readable.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/glitch-heavy-spider.png"
-                alt="Glitch art — heavy level, spider on web"
-                data-lightbox
-                data-caption="Heavy"
-                data-description="The heaviest treatment in the series: aggressive displacement and noise while the spider, web, and red marking stay identifiable as the focal point."
-              />
-            </div>
-            <h3>Glitch Art — Heavy</h3>
-            <p>Maximum glitch energy with the subject still recognizable.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/album-design-sunset-glitch.png"
-                alt="Sunset Aurora glitch album cover, split sunset and inverted shore"
-                data-lightbox
-                data-caption="Sunset Aurora · Album Design"
-                data-description="This project was about creating an album cover using glitch images. I chose the glitched sunset because it had the perfect balance for an album cover—the top half preserves the original sunset, while the bottom half contrasts with a photographic negative–like effect. The image is also split almost perfectly across the middle, which adds to its visual impact. Additionally, the sunset aesthetic fits well with the music style of Aurora, and the glitched effect even contains colors that resemble an aurora palette."
-              />
-            </div>
-            <h3>Digital Works</h3>
-            <p>Glitch collage cover for Aurora—split horizon and aurora-toned palette.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/vector-yuumi-sticker.png"
-                alt="Vector sticker of Yuumi from League of Legends"
-                data-lightbox
-                data-caption="Sticker"
-                data-description="A die-cut style sticker drawn with the Pen Tool in Illustrator, based on a Yuumi figure from League of Legends—detailed character work without the plastic display base."
-              />
-            </div>
-            <h3>Vector Art — Sticker</h3>
-            <p>Pen Tool illustration translated into a die-cut sticker design.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/vector-yuumi-mockup.png"
-                alt="Yuumi sticker applied on a laptop"
-                data-lightbox
-                data-caption="Mockup"
-                data-description="Real-world preview: how the finished vector sticker reads on a laptop and on a table, for presentation and scale."
-              />
-            </div>
-            <h3>Vector Art — Mockup</h3>
-            <p>Real-world preview of the finished sticker.</p>
-          </article>
-          <article class="film-frame">
-            <div class="film-art">
-              <img
-                src="assets/creative-coding-robot.png"
-                alt="p5.js robot in a cyberpunk city with a portal"
-                data-lightbox
-                data-caption="Robot"
-                data-description="Built in p5.js with a cyberpunk street scene as the plate: a geometric robot and floating shapes suggesting portals and tech-driven control, in line with the assignment brief."
-              />
-            </div>
-            <h3>Creative Coding — Robot</h3>
-            <p>
-              Geometric robot built in p5.js over a futuristic street scene.
-              <a href="projects.html#film-roll-code">Open project &amp; sketch link →</a>
-            </p>
-          </article>
-        </div>
+        <div class="film-track" id="home-film-track" aria-label="Film strip moving right to left"></div>
       </div>
       <div class="wrap film-experience__footer">
-        <a class="portfolio-cta" href="projects.html#projects-heading">checking portfolio here <span aria-hidden="true">→</span></a>
+        <a class="portfolio-cta" href="projects.html#projects-heading">CHECKING PORTFOLIO HERE <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
@@ -190,13 +95,78 @@
     </div>
     <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" type="button" aria-label="Next work">›</button>
   </div>
+  <script src="portfolio-data.js"></script>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
 
     const filmSection = document.getElementById("film-strip");
     const stage = document.querySelector(".film-stage");
-    const track = stage.querySelector(".film-track");
-    const frames = Array.from(track.querySelectorAll(".film-frame"));
+    const track = document.getElementById("home-film-track");
+    const HOME_STRIP_COUNT = 7;
+
+    function flattenPortfolioWorks() {
+      const works = [];
+      (window.FILM_ROLLS || []).forEach((roll) => {
+        (roll.frames || []).forEach((frame) => {
+          works.push({
+            rollId: roll.id,
+            rollName: roll.name,
+            src: frame.src,
+            alt: frame.alt || frame.caption || roll.name,
+            caption: frame.caption,
+            description: frame.description || "",
+            blurb: frame.description
+              ? frame.description.length > 110
+                ? `${frame.description.slice(0, 107).trim()}…`
+                : frame.description
+              : "",
+          });
+        });
+      });
+      return works;
+    }
+
+    function shuffleWorks(list) {
+      const next = list.slice();
+      for (let i = next.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = next[i];
+        next[i] = next[j];
+        next[j] = tmp;
+      }
+      return next;
+    }
+
+    function renderHomeFilmStrip() {
+      const picks = shuffleWorks(flattenPortfolioWorks()).slice(0, HOME_STRIP_COUNT);
+      track.innerHTML = "";
+      picks.forEach((work, index) => {
+        const article = document.createElement("article");
+        article.className = index === 0 ? "film-frame is-active" : "film-frame";
+
+        const art = document.createElement("div");
+        art.className = "film-art";
+        const img = document.createElement("img");
+        img.src = work.src;
+        img.alt = work.alt;
+        img.setAttribute("data-lightbox", "");
+        img.setAttribute("data-caption", work.caption || work.rollName);
+        if (work.description) img.setAttribute("data-description", work.description);
+        art.appendChild(img);
+
+        const title = document.createElement("h3");
+        title.textContent = `${work.rollName} — ${work.caption}`;
+
+        const blurb = document.createElement("p");
+        blurb.textContent = work.blurb || work.rollName;
+
+        article.append(art, title, blurb);
+        track.appendChild(article);
+      });
+      return Array.from(track.querySelectorAll(".film-frame"));
+    }
+
+    let frames = renderHomeFilmStrip();
 
     let mouseBoost = 0.85;
     let mouseBoostTarget = 0.85;
