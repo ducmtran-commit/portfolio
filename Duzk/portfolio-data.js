@@ -132,8 +132,8 @@ window.FILM_ROLLS = [
       },
       {
         src: "assets/illustration-winterblessed-zoe.jpg",
-        alt: "Black and white practice splash art of Winterblessed Zoe",
-        caption: "Winterblessed Zoe Splash Art B&W",
+        alt: "Black and white concept splash art of Winterblessed Zoe",
+        caption: "Winterblessed Zoe Splash Art B&W Concept",
         description:
           "This is a practice splash-art illustration of Winterblessed Zoe, inspired by the visual style of Riot Games’ League of Legends.",
       },
