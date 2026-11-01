@@ -137,6 +137,13 @@ window.FILM_ROLLS = [
         description:
           "This is a practice splash-art illustration of Winterblessed Zoe, inspired by the visual style of Riot Games’ League of Legends.",
       },
+      {
+        src: "assets/illustration-clownfish.jpg",
+        alt: "Clownfish illustration with clown makeup face and orange white black body",
+        caption: "Clownfish Illustration",
+        description:
+          "Digital illustration of a clownfish with a clown face, combining animal form and character design.",
+      },
     ],
   },
   {
