@@ -144,6 +144,12 @@ window.FILM_ROLLS = [
         description:
           "Digital illustration of a clownfish with a clown face, combining animal form and character design.",
       },
+      {
+        src: "assets/illustration-dead-restaurant-banner.png",
+        alt: "Dead Restaurant Discord banner with bartender and neon pink sign",
+        caption: "Dead Restaurant Banner",
+        description: "Dead Restaurant banner design for Discord",
+      },
     ],
   },
   {
